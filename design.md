@@ -18,7 +18,7 @@ rep, invoices), each against 2,328.60.
 
 | Screen | # | Question | Chart | Why | Tiles |
 |---|---|---|---|---|---|
-| 1. Where the money comes from | 1 | Top 5 genres and share | Horizontal bars of percentages | Shares of a whole, 5 parts | Total revenue (vs. yearly average for one year; vs. Finance's invoice total for all years), top genre share, top country share, gap vs. Finance |
+| 1. Where the money comes from | 1 | Top 5 genres and share | Horizontal bars of percentages | Shares of a whole, 5 parts | Total revenue (vs. yearly average for one year; vs. Finance for all years), top genre share, top country share, gap vs. Finance |
 | 1 | 2 | Top 5 countries and share | Horizontal bars of percentages | Shares of a whole, 5 parts | (same row) |
 | 1 | 3 | Top genre-and-country combinations | Ranked horizontal bars, top 10 | Items ranked by size | (same row) |
 | 2. Growth | 4 | Yearly revenue and % change | Line of 5 years, plus a small table of values and % change | Change over time; exact values looked up | Last full year (2024) vs. 2023, 2025 so far vs. 2024, 5-year average |

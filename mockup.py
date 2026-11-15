@@ -86,7 +86,7 @@ def screen_money() -> None:
     st.markdown(f"**{top_genre['genre']} and {top_country['country']} carry the most revenue.**")
     charts.kpi_row([
         {"label": "Total revenue", "value": total, "kind": "money",
-         **({"delta": 0.0, "versus": "vs Finance's invoice total"} if year == "All years"
+         **({"delta": 0.0, "versus": "vs Finance"} if year == "All years"
             else {"delta": total - AVG_YEAR, "versus": "vs yearly average"})},
         {"label": f"{top_genre['genre']} share of revenue", "value": genre_share, "kind": "percent"},
         {"label": f"{top_country['country']} share of revenue", "value": country_share,
@@ -192,8 +192,8 @@ def screen_reps() -> None:
     st.markdown(f"**{top['rep']}'s customers bring in the most: "
                 f"{charts.fmt(top['revenue'], 'money')}.**".replace("$", r"\$"))
     charts.kpi_row([
-        {"label": "Average revenue per customer", "value": avg_per_customer, "kind": "cents"},
-        {"label": f"Top revenue per customer: {best['rep']}", "value": best["per_customer"],
+        {"label": "Avg revenue per customer", "value": avg_per_customer, "kind": "cents"},
+        {"label": f"Best per customer: {best['rep']}", "value": best["per_customer"],
          "kind": "cents", "delta": best["per_customer"] - avg_per_customer, "versus": "vs average"},
         {"label": "Average customers per rep", "value": REPS["customers"].mean(), "kind": "count"},
         {"label": "Gap vs. Finance", "value": 0.0, "kind": "money"},
