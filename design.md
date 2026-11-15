@@ -180,6 +180,8 @@ the chart with the team before building it, and add a row here.
 
 - Money in whole dollars ($1,234), with cents under $10 ($5.65); counts
   with separators (1,234); percentages to one decimal (12.3%).
+- Averages per customer keep cents ($39.67) whatever their size, so close
+  values can be told apart (`kind="cents"`).
 - Bars start at zero.
 
 ### Color

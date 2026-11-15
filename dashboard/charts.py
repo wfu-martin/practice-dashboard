@@ -7,7 +7,8 @@ To change the look, change the rule in design.md and the matching line here
 (and the theme in .streamlit/config.toml), never one view at a time.
 
 Number kinds: "money" ($1,234, or $5.65 under $10), "count" (1,234),
-"percent" (12.3%, from a fraction such as 0.123).
+"percent" (12.3%, from a fraction such as 0.123), "cents" ($39.67, always
+two decimals: averages per customer).
 """
 
 import pandas as pd
@@ -44,9 +45,10 @@ def headline(takeaway: str, note: str = "") -> None:
     takeaway: the answer, with its number ("Rock earns 35% of revenue").
     note: the metric, its period, and its filters, from the spec.
     """
-    st.subheader(takeaway)
+    # Two dollar signs in one line would be read as a formula and garbled.
+    st.subheader(takeaway.replace("$", r"\$"))
     if note:
-        st.caption(note)
+        st.caption(note.replace("$", r"\$"))
 
 
 def kpi_row(tiles: list[dict]) -> None:

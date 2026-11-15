@@ -119,8 +119,8 @@ def screen_growth() -> None:
     years = pd.DataFrame({"year": [str(y) for y in YEAR_TOTALS], "revenue": list(YEAR_TOTALS.values())})
     years["change"] = years["revenue"].pct_change()
     low, high = years["change"].min(), years["change"].max()
-    st.markdown(f"**Revenue is flat: about {charts.fmt(years['revenue'].min(), 'money')} to "
-                f"{charts.fmt(years['revenue'].max(), 'money')} a year since 2021.**")
+    st.markdown((f"**Revenue is flat: about {charts.fmt(years['revenue'].min(), 'money')} to "
+                 f"{charts.fmt(years['revenue'].max(), 'money')} a year since 2021.**").replace("$", r"\$"))
     charts.kpi_row([
         {"label": "2024 revenue", "value": YEAR_TOTALS[2024], "kind": "money",
          "delta": YEAR_TOTALS[2024] - YEAR_TOTALS[2023], "versus": "vs 2023"},
@@ -133,7 +133,9 @@ def screen_growth() -> None:
     charts.headline(f"Yearly revenue moved between {charts.fmt(low, 'percent')} and "
                     f"+{charts.fmt(high, 'percent')}",
                     "Revenue by calendar year, 2021-2025. 2025 ends 22 December.")
-    charts.show(charts.trend_line(years, "year", "revenue"))
+    fig = charts.trend_line(years, "year", "revenue")
+    fig.update_xaxes(type="category")  # one tick per year, no "2,021.5"
+    charts.show(fig)
     table = pd.DataFrame({
         "Year": years["year"],
         "Revenue": [charts.fmt(v, "money") for v in years["revenue"]],
@@ -159,7 +161,7 @@ def screen_customers() -> None:
     st.markdown(f"**The top 10 customers bring in {charts.fmt(share, 'percent')} of revenue.**")
     charts.kpi_row([
         {"label": "Top-10 share of revenue", "value": share, "kind": "percent",
-         "delta": share - 0.10, "versus": "vs an even split (10.0%)"},
+         "delta": share - 0.10, "versus": "vs even split"},
         {"label": "Top-10 revenue", "value": top_total, "kind": "money"},
         {"label": "Bought in all 5 years", "value": all_five, "kind": "count"},
         {"label": "Gap vs. Finance", "value": 0.0, "kind": "money"},
@@ -186,11 +188,12 @@ def screen_reps() -> None:
     low = REPS.iloc[-1]
     best = REPS.loc[REPS["per_customer"].idxmax()]
     spread = REPS["per_customer"].max() - REPS["per_customer"].min()
-    st.markdown(f"**{top['rep']}'s customers bring in the most: {charts.fmt(top['revenue'], 'money')}.**")
+    st.markdown(f"**{top['rep']}'s customers bring in the most: "
+                f"{charts.fmt(top['revenue'], 'money')}.**".replace("$", r"\$"))
     charts.kpi_row([
         {"label": "Revenue from rep customers", "value": REPS["revenue"].sum(), "kind": "money"},
-        {"label": f"Best revenue per customer ({best['rep']})", "value": best["per_customer"],
-         "kind": "money"},
+        {"label": f"Top revenue per customer: {best['rep']}", "value": best["per_customer"],
+         "kind": "cents"},
         {"label": "Average customers per rep", "value": REPS["customers"].mean(), "kind": "count"},
         {"label": "Gap vs. Finance", "value": 0.0, "kind": "money"},
     ])
@@ -205,7 +208,7 @@ def screen_reps() -> None:
     table = pd.DataFrame({
         "Rep": REPS["rep"],
         "Customers": REPS["customers"],
-        "Revenue per customer": [charts.fmt(v, "money") for v in REPS["per_customer"]],
+        "Revenue per customer": [charts.fmt(v, "cents") for v in REPS["per_customer"]],
     })
     st.dataframe(table, hide_index=True, width="stretch")
 
