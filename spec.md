@@ -94,3 +94,8 @@ Every screen shows the grand total revenue and the date range it covers, so Morg
 - **AC-13** (question 1): Given the year 2023 is selected on Screen 1, when the user opens Screens 2, 3, or 4, then they still show the full period (for example the Growth screen still shows all five years).
 
 ## Out of scope
+
+- **Forecasts and budget advice.** The dashboard shows what happened. It does not predict next year or recommend how to split the marketing budget.
+- **Proving reps cause sales.** The Sales reps screen shows revenue and customers per rep as context. It cannot show that a rep caused the sales, so it makes no hiring recommendation.
+- **Exports and extras.** No downloads, email reports, logins, or editing of data. It is a read-only view.
+- **Extra breakdowns.** No artist, album, city, or product-level views, and no filters beyond the year picker on Screen 1.
