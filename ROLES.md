@@ -26,4 +26,4 @@ the Spec Lead's (or Stakeholder Lead's) OK, named below.
 
 | Name | GitHub username | Role |
 |---|---|---|
-| | | |
+| Justin Martin | wfu-martin | Spec Lead (holds every role) |
