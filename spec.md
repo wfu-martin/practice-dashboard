@@ -68,6 +68,15 @@
 
 ## Screens and interactions
 
+Every screen shows the grand total revenue and the date range it covers, so Morgan can quote one number that ties to Finance (question 10). Question 10's totals-by-group check is applied to every screen that breaks revenue into groups.
+
+| Screen | Answers | Filters |
+|---|---|---|
+| 1. Where the money comes from | Questions 1, 2, 3 | Year picker (default: all years). The grand total, shares and combinations change with the year chosen. |
+| 2. Growth | Questions 4, 5 | None. Always the full period. |
+| 3. Customers | Questions 6, 7 | None. Always the full period. |
+| 4. Sales reps | Questions 8, 9 | None. Always the full period. |
+
 ## Acceptance criteria
 
 ## Out of scope
