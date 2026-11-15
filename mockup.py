@@ -133,8 +133,8 @@ def screen_growth() -> None:
     charts.headline(f"Yearly revenue moved between {charts.fmt(low, 'percent')} and "
                     f"+{charts.fmt(high, 'percent')}",
                     "Revenue by calendar year, 2021-2025. 2025 ends 22 December.")
-    fig = charts.trend_line(years, "year", "revenue")
-    fig.update_xaxes(type="category")  # one tick per year, no "2,021.5"
+    fig = charts.trend_line(years.assign(date=pd.to_datetime(years["year"])), "date", "revenue")
+    fig.update_xaxes(tickformat="%Y", dtick="M12", hoverformat="%Y")  # one tick per year
     charts.show(fig)
     table = pd.DataFrame({
         "Year": years["year"],
