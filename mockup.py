@@ -83,11 +83,11 @@ def screen_money() -> None:
     genre_share = top_genre["revenue"] / total
     country_share = top_country["revenue"] / total
     st.title("Where the money comes from")
-    st.markdown(f"**{top_genre['genre']} earns {charts.fmt(genre_share, 'percent')} of revenue "
-                f"and {top_country['country']} {charts.fmt(country_share, 'percent')}.**")
+    st.markdown(f"**{top_genre['genre']} and {top_country['country']} carry the most revenue.**")
     charts.kpi_row([
         {"label": "Total revenue", "value": total, "kind": "money",
-         **({} if year == "All years" else {"delta": total - AVG_YEAR, "versus": "vs yearly average"})},
+         **({"delta": 0.0, "versus": "vs Finance's invoice total"} if year == "All years"
+            else {"delta": total - AVG_YEAR, "versus": "vs yearly average"})},
         {"label": f"{top_genre['genre']} share of revenue", "value": genre_share, "kind": "percent"},
         {"label": f"{top_country['country']} share of revenue", "value": country_share,
          "kind": "percent"},
@@ -172,7 +172,7 @@ def screen_customers() -> None:
                     "Revenue by customer, 2021-2025, top 10 (customers tied for 10th included).")
     charts.show(charts.ranked_bar(CUSTOMERS, "customer", "revenue", top=10))
 
-    charts.headline(f"Only {all_five} of the top 10 bought in all 5 years",
+    charts.headline(f"{all_five} of the top 10 bought in all 5 years",
                     "Calendar years with at least one invoice, top 10 customers, 2021-2025.")
     table = CUSTOMERS[["customer", "years"]].rename(
         columns={"customer": "Customer", "years": "Years bought (of 5)"})
@@ -188,12 +188,13 @@ def screen_reps() -> None:
     low = REPS.iloc[-1]
     best = REPS.loc[REPS["per_customer"].idxmax()]
     spread = REPS["per_customer"].max() - REPS["per_customer"].min()
+    avg_per_customer = REPS["revenue"].sum() / REPS["customers"].sum()
     st.markdown(f"**{top['rep']}'s customers bring in the most: "
                 f"{charts.fmt(top['revenue'], 'money')}.**".replace("$", r"\$"))
     charts.kpi_row([
-        {"label": "Revenue from rep customers", "value": REPS["revenue"].sum(), "kind": "money"},
+        {"label": "Average revenue per customer", "value": avg_per_customer, "kind": "cents"},
         {"label": f"Top revenue per customer: {best['rep']}", "value": best["per_customer"],
-         "kind": "cents"},
+         "kind": "cents", "delta": best["per_customer"] - avg_per_customer, "versus": "vs average"},
         {"label": "Average customers per rep", "value": REPS["customers"].mean(), "kind": "count"},
         {"label": "Gap vs. Finance", "value": 0.0, "kind": "money"},
     ])

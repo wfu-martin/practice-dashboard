@@ -18,14 +18,14 @@ rep, invoices), each against 2,328.60.
 
 | Screen | # | Question | Chart | Why | Tiles |
 |---|---|---|---|---|---|
-| 1. Where the money comes from | 1 | Top 5 genres and share | Horizontal bars of percentages | Shares of a whole, 5 parts | Total revenue (vs. yearly average), top genre share, top country share, gap vs. Finance |
+| 1. Where the money comes from | 1 | Top 5 genres and share | Horizontal bars of percentages | Shares of a whole, 5 parts | Total revenue (vs. yearly average for one year; vs. Finance's invoice total for all years), top genre share, top country share, gap vs. Finance |
 | 1 | 2 | Top 5 countries and share | Horizontal bars of percentages | Shares of a whole, 5 parts | (same row) |
 | 1 | 3 | Top genre-and-country combinations | Ranked horizontal bars, top 10 | Items ranked by size | (same row) |
 | 2. Growth | 4 | Yearly revenue and % change | Line of 5 years, plus a small table of values and % change | Change over time; exact values looked up | Last full year (2024) vs. 2023, 2025 so far vs. 2024, 5-year average |
 | 2 | 5 | Monthly revenue | Line of 60 months | Change over time | (same row) |
 | 3. Customers | 6 | Top-10 customer share | Ranked horizontal bars of the 10 customers, share in the headline | Items ranked by size | Top-10 share vs. an even split, top-10 revenue, customers who bought in all 5 years |
 | 3 | 7 | Years bought, top 10 customers | Table (customer, years bought of 5) | Exact values looked up | (same row) |
-| 4. Sales reps | 8 | Revenue per rep | Ranked horizontal bars | Items ranked by size | Total rep revenue, best revenue per customer, average customers per rep |
+| 4. Sales reps | 8 | Revenue per rep | Ranked horizontal bars | Items ranked by size | Average revenue per customer, top revenue per customer (vs. the average), average customers per rep |
 | 4 | 9 | Customers and revenue per customer | Table (rep, customers, revenue per customer) | Exact values looked up | (same row) |
 | All | 10 | Does it tie to Finance | Collapsed table of group totals against 2,328.60 | Exact values looked up | Gap vs. Finance on every screen |
 
@@ -38,11 +38,11 @@ metric, the period and the filters.
 **Screen 1. Where the money comes from** (questions 1, 2, 3, 10)
 
 ```
- SIDEBAR            Rock earns 35.5% of revenue and the USA 22.5%
+ SIDEBAR            Rock and the USA carry the most revenue
  Year: [All years]  ----------------------------------------------------
                     [Total revenue] [Top genre share] [Top country] [Gap vs Finance]
                     [$2,329       ] [35.5%          ] [USA 22.5%  ] [$0.00          ]
-                    [vs $466 avg yr ] [Rock           ] [           ] [ties out       ]
+                    [+$0 vs Finance ] [Rock           ] [           ] [ties out       ]
 
                     Rock earns 35.5% of revenue                  <- Q1, bars of %
                     Revenue by genre, all years, top 5
@@ -104,7 +104,7 @@ metric, the period and the filters.
                     Customer A  ████████  $__
                     ...
 
-                    Only 2 of the top 10 bought in all 5 years       <- Q7, table
+                    2 of the top 10 bought in all 5 years         <- Q7, table
                     Years with at least one invoice, top 10 customers
                     Customer | Years bought (of 5)
                     ...
@@ -117,9 +117,9 @@ metric, the period and the filters.
 ```
  SIDEBAR            Jane's customers bring in the most: $833
  (no filters)       ----------------------------------------------------
-                    [Total rep revenue] [Best per customer] [Avg customers/rep] [Gap vs Finance]
-                    [$2,329           ] [Steve $40.01     ] [20               ] [$0.00         ]
-                    [vs total $2,329  ]
+                    [Avg per customer ] [Top per customer ] [Avg customers/rep] [Gap vs Finance]
+                    [$39.47           ] [Steve $40.01     ] [20               ] [$0.00         ]
+                                        [+$0.54 vs avg  ]
 
                     Jane's customers bring in $833, Steve's $720    <- Q8, ranked bars
                     Revenue from each rep's customers, full period
