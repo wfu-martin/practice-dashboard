@@ -79,4 +79,18 @@ Every screen shows the grand total revenue and the date range it covers, so Morg
 
 ## Acceptance criteria
 
+- **AC-1** (question 1): Given all years are selected, when Screen 1 loads, then the top five genres by revenue are Rock 826.65 (35.5%), Latin 382.14 (16.4%), Metal 261.36 (11.2%), Alternative & Punk 241.56 (10.4%), and TV Shows 93.53 (4.0%).
+- **AC-2** (question 1): Given the year 2023 is selected, when Screen 1 loads, then the grand total is 469.58 and the top genre is Rock at 156.42.
+- **AC-3** (question 2): Given all years are selected, when Screen 1 loads, then the top five countries by revenue are USA 523.06 (22.5%), Canada 303.96 (13.1%), France 195.10 (8.4%), Brazil 190.10 (8.2%), and Germany 156.48 (6.7%).
+- **AC-4** (question 3): Given all years are selected, when Screen 1 loads, then the top three genre-and-country combinations are USA Rock 155.43, Canada Rock 105.93, and USA Latin 90.09.
+- **AC-5** (question 4): Given the Growth screen, when it loads, then yearly revenue is 2021: 449.46, 2022: 481.45, 2023: 469.58, 2024: 477.53, 2025: 450.58, with change from the prior year of none, +7.1%, -2.5%, +1.7%, and -5.6%.
+- **AC-6** (question 5): Given the Growth screen, when it loads, then monthly revenue shows 60 months from January 2021 to December 2025, and January 2021 is 35.64.
+- **AC-7** (question 6): Given the Customers screen, when it loads, then the top 10 customers account for 451.20 of revenue, which is 19.4% of the total.
+- **AC-8** (question 7): Given the Customers screen, when it loads, then of the top 10 customers 3 bought in 3 of the 5 years, 5 bought in 4 years, and 2 bought in all 5 years.
+- **AC-9** (question 8): Given the Sales reps screen, when it loads, then revenue from each rep's customers is Jane 833.04, Margaret 775.40, and Steve 720.16.
+- **AC-10** (question 9): Given the Sales reps screen, when it loads, then customers per rep are Jane 21, Margaret 20, Steve 18, and revenue per customer is Jane 39.67, Margaret 38.77, Steve 40.01.
+- **AC-11** (question 10): Given any screen with all years in view, when it loads, then the grand total shown is 2,328.60, equal to the sum of invoice totals, and the reconciliation gap is 0.00.
+- **AC-12** (question 10): Given all years are selected, when revenue is broken out by genre, by country, by year, and by rep, then each breakdown adds up to 2,328.60.
+- **AC-13** (question 1): Given the year 2023 is selected on Screen 1, when the user opens Screens 2, 3, or 4, then they still show the full period (for example the Growth screen still shows all five years).
+
 ## Out of scope
