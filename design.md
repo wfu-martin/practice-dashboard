@@ -31,8 +31,114 @@ rep, invoices), each against 2,328.60.
 
 ### Drawings
 
-<One text wireframe per screen, with the framed question each section
-answers and the chart chosen for it. Drawn with `/dashkit:design`.>
+Numbers in the drawings come from the acceptance criteria in `spec.md`; the
+real headlines are computed from the data. Every screen's caption names the
+metric, the period and the filters.
+
+**Screen 1. Where the money comes from** (questions 1, 2, 3, 10)
+
+```
+ SIDEBAR            Rock earns 35.5% of revenue and the USA 22.5%
+ Year: [All years]  ----------------------------------------------------
+                    [Total revenue] [Top genre share] [Top country] [Gap vs Finance]
+                    [$2,329       ] [35.5%          ] [USA 22.5%  ] [$0.00          ]
+                    [vs $466 avg yr ] [Rock           ] [           ] [ties out       ]
+
+                    Rock earns 35.5% of revenue                  <- Q1, bars of %
+                    Revenue by genre, all years, top 5
+                    Rock             ████████████████  35.5%
+                    Latin            ███████▌          16.4%
+                    Metal            █████▏            11.2%
+                    Alternative&Punk ████▊             10.4%
+                    TV Shows         █▉                 4.0%
+
+                    The USA earns 22.5% of revenue               <- Q2, bars of %
+                    Revenue by billing country, all years, top 5
+                    USA ██████████  22.5%   Canada ██████ 13.1%
+                    France ████ 8.4%  Brazil ████ 8.2%  Germany ███ 6.7%
+
+                    USA Rock is the biggest single combination  <- Q3, ranked bars
+                    Revenue by country and genre, top 10
+                    USA - Rock       ████████████  $155
+                    Canada - Rock    ████████      $106
+                    USA - Latin      ███████        $90
+                    ... (10 rows)
+
+                    > Check against Finance (collapsed)          <- Q10
+```
+
+**Screen 2. Growth** (questions 4, 5, 10)
+
+```
+ SIDEBAR            Revenue is flat: about $450-$480 a year since 2021
+ (no filters)       ----------------------------------------------------
+                    [2024 vs 2023   ] [2025 so far vs 2024] [5-year average] [Gap vs Finance]
+                    [$478  +1.7%    ] [$451  -5.6%*       ] [$466          ] [$0.00         ]
+                                      *2025 ends 22 Dec
+
+                    Yearly revenue moved between -5.6% and +7.1%   <- Q4
+                    Revenue by calendar year, 2021-2025
+                    [line, 5 points, labeled with $ values]
+                    Year | Revenue | Change from prior year
+                    2021 | $449    | none
+                    2022 | $481    | +7.1%    ... (5 rows)
+
+                    Monthly revenue swings around $35-$40           <- Q5
+                    Revenue by calendar month, Jan 2021-Dec 2025
+                    [line, 60 points]
+
+                    > Check against Finance (collapsed)             <- Q10
+```
+
+**Screen 3. Customers** (questions 6, 7, 10)
+
+```
+ SIDEBAR            The top 10 customers bring in 19.4% of revenue
+ (no filters)       ----------------------------------------------------
+                    [Top-10 share    ] [Top-10 revenue] [Bought all 5 years] [Gap vs Finance]
+                    [19.4%           ] [$451          ] [2 of 10           ] [$0.00         ]
+                    [vs 10.0% if even]
+
+                    Top 10 customers bring in $451, 19.4% of total  <- Q6, ranked bars
+                    Revenue by customer, full period, top 10 (ties included)
+                    Customer A  ████████  $__
+                    ...
+
+                    Only 2 of the top 10 bought in all 5 years       <- Q7, table
+                    Years with at least one invoice, top 10 customers
+                    Customer | Years bought (of 5)
+                    ...
+
+                    > Check against Finance (collapsed)              <- Q10
+```
+
+**Screen 4. Sales reps** (questions 8, 9, 10)
+
+```
+ SIDEBAR            Jane's customers bring in the most: $833
+ (no filters)       ----------------------------------------------------
+                    [Total rep revenue] [Best per customer] [Avg customers/rep] [Gap vs Finance]
+                    [$2,329           ] [Steve $40.01     ] [20               ] [$0.00         ]
+                    [vs total $2,329  ]
+
+                    Jane's customers bring in $833, Steve's $720    <- Q8, ranked bars
+                    Revenue from each rep's customers, full period
+                    Jane     ████████████  $833
+                    Margaret ███████████   $775
+                    Steve    ██████████    $720
+
+                    Revenue per customer is within $1.40 across reps <- Q9, table
+                    Customers and revenue per customer, full period
+                    Rep      | Customers | Revenue per customer
+                    Jane     | 21        | $39.67   ... (3 rows)
+
+                    > Check against Finance (collapsed)              <- Q10
+```
+
+**Check against Finance** (the collapsed section on every screen, question 10):
+a table with one row per breakdown (by genre, by country, by year, by rep,
+sum of invoice totals), each total beside $2,328.60 and a gap column that
+reads 0.00.
 
 ---
 
