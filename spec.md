@@ -35,7 +35,36 @@
 
 ## Metric definitions
 
+**Revenue** means one thing everywhere: unit_price × quantity on each invoice line, summed. It equals the sum of invoice totals (2,328.60 across all 412 invoices), so the dashboard ties to Finance. **Country** means the invoice's billing country. The data runs 2021-01-01 to 2025-12-22, so 2025 is a few days short of a full year.
+
+| Metric | Formula | Granularity | Filters | Source |
+|---|---|---|---|---|
+| Revenue | SUM(unit_price × quantity) | One row per invoice line | None | invoice_line.unit_price, invoice_line.quantity |
+| Genre revenue | Revenue grouped by genre name | One row per genre | None | invoice_line → track.genre_id → genre.name |
+| Country revenue | Revenue grouped by billing country | One row per country | None | invoice.billing_country, invoice_line |
+| Genre-country revenue | Revenue grouped by billing country and genre | One row per country and genre | None | invoice.billing_country, genre.name, invoice_line |
+| Revenue share | Group revenue ÷ total revenue | One row per genre or country | None | Derived from the metrics above |
+| Yearly revenue | Revenue grouped by calendar year | One row per year | 2025 ends 22 Dec | invoice.invoice_date, invoice_line |
+| Year-over-year change | (This year − prior year) ÷ prior year | One row per year | 2021 has no prior year | Derived from Yearly revenue |
+| Monthly revenue | Revenue grouped by calendar month | One row per month | None | invoice.invoice_date, invoice_line |
+| Customer revenue | Revenue grouped by customer | One row per customer | None | invoice.customer_id, invoice_line |
+| Top-10 customer share | Sum of Customer revenue for customers ranked in the top 10 ÷ total revenue | One row | Customers tied for 10th place are all included, so the list can show 11 | Derived from Customer revenue |
+| Years active | Count of distinct calendar years with at least one invoice | One row per customer | Top 10 customers, including any tied for 10th | invoice.customer_id, invoice.invoice_date |
+| Rep revenue | Revenue from customers whose support_rep_id is the rep | One row per rep | Employees titled Sales Support Agent | customer.support_rep_id, employee.title, invoice_line |
+| Rep customers | Count of customers whose support_rep_id is the rep | One row per rep | Employees titled Sales Support Agent | customer.support_rep_id, employee.title |
+| Revenue per customer | Rep revenue ÷ Rep customers | One row per rep | Employees titled Sales Support Agent | Derived from the two rep metrics |
+| Reconciliation gap | SUM(invoice.total) − Revenue | One row | Must equal 0.00 | invoice.total, invoice_line |
+
 ## Data sources
+
+| Table | Columns used |
+|---|---|
+| invoice | invoice_id, customer_id, invoice_date, billing_country, total |
+| invoice_line | invoice_id, track_id, unit_price, quantity |
+| track | track_id, genre_id |
+| genre | genre_id, name |
+| customer | customer_id, support_rep_id |
+| employee | employee_id, first_name, title |
 
 ## Screens and interactions
 
