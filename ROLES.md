@@ -26,4 +26,12 @@ the Spec Lead's (or Stakeholder Lead's) OK, named below.
 
 | Name | GitHub username | Role |
 |---|---|---|
-| Justin Martin | wfu-martin | Spec Lead (holds every role) |
+| Avery Chen | avery-chen (fictional) | Spec Lead |
+| Priya Raman | priya-raman (fictional) | Design Lead |
+| Marcus Bell | marcus-bell (fictional) | Delivery Lead |
+| Tomás Rivera | tomas-rivera (fictional) | Data Lead |
+| Sofia Nakamura | sofia-nakamura (fictional) | Pitch Lead |
+
+Practice team: the five names above are fictional, for demonstration. Every
+Issue names its owner here and is assigned on GitHub to the real account
+`wfu-martin`.
