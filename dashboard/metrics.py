@@ -199,4 +199,14 @@ def monthly_revenue(engine: sqlalchemy.Engine) -> pd.DataFrame:
     Granularity: one row per month, columns `month` (first day of the month)
     and `revenue`.
     """
-    raise NotImplementedError("Issue #11")
+    return read_sql(
+        engine,
+        """
+        SELECT CAST(DATE_TRUNC('month', i.invoice_date) AS date) AS month,
+               SUM(il.unit_price * il.quantity) AS revenue
+        FROM invoice_line AS il
+        JOIN invoice AS i ON i.invoice_id = il.invoice_id
+        GROUP BY 1
+        ORDER BY 1
+        """,
+    )
