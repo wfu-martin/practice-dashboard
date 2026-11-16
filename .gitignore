@@ -16,3 +16,6 @@ Thumbs.db
 # Database exports never belong in a public repository.
 *.dump
 *.sql.gz
+
+# Local copy of the database login for the practice database.
+vinyl_vault.secrets.toml
