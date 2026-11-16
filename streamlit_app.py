@@ -305,10 +305,10 @@ def sales_reps():
     )
     total_caption()
     charts.kpi_row([
-        {"label": "Avg per customer", "value": per_customer, "kind": "cents"},
+        {"label": "Average per customer", "value": per_customer, "kind": "cents"},
         {"label": f"Top per customer: {best['rep']}", "value": best["revenue_per_customer"], "kind": "cents",
-         "delta": best["revenue_per_customer"] - per_customer, "versus": "vs avg"},
-        {"label": "Avg customers per rep", "value": reps["customers"].mean(), "kind": "count"},
+         "delta": best["revenue_per_customer"] - per_customer, "versus": "vs average"},
+        {"label": "Average customers per rep", "value": reps["customers"].mean(), "kind": "count"},
         gap_tile(),
     ])
 
