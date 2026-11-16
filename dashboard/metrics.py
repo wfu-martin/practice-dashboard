@@ -38,18 +38,7 @@ def revenue_by_genre(engine: sqlalchemy.Engine) -> pd.DataFrame:
     Revenue = unit price x quantity, added up over every invoice line.
     Granularity: one row per genre.
     """
-    return read_sql(
-        engine,
-        """
-        SELECT g.name AS genre,
-               SUM(il.unit_price * il.quantity) AS revenue
-        FROM invoice_line AS il
-        JOIN track AS t ON t.track_id = il.track_id
-        JOIN genre AS g ON g.genre_id = t.genre_id
-        GROUP BY g.name
-        ORDER BY revenue DESC
-        """,
-    )
+    return genre_revenue_share(engine)[["genre", "revenue"]]
 
 
 # Revenue as the spec defines it: unit price x quantity over every invoice line.
@@ -92,4 +81,21 @@ def genre_revenue_share(engine: sqlalchemy.Engine, year: int | None = None) -> p
     means all years.
     Granularity: one row per genre, columns `genre`, `revenue`, `share_pct`.
     """
-    raise NotImplementedError("Issue #7")
+    return read_sql(
+        engine,
+        """
+        SELECT g.name AS genre,
+               SUM(il.unit_price * il.quantity) AS revenue,
+               100 * SUM(il.unit_price * il.quantity)
+                   / SUM(SUM(il.unit_price * il.quantity)) OVER () AS share_pct
+        FROM invoice_line AS il
+        JOIN invoice AS i ON i.invoice_id = il.invoice_id
+        JOIN track AS t ON t.track_id = il.track_id
+        JOIN genre AS g ON g.genre_id = t.genre_id
+        WHERE CAST(:year AS integer) IS NULL
+           OR EXTRACT(YEAR FROM i.invoice_date) = CAST(:year AS integer)
+        GROUP BY g.name
+        ORDER BY revenue DESC
+        """,
+        {"year": year},
+    )
