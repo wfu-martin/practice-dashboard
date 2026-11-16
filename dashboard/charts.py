@@ -55,15 +55,17 @@ def kpi_row(tiles: list[dict]) -> None:
     """A row of headline numbers, each against a comparison.
 
     Each tile is {"label", "value", "kind"} plus, optionally, "delta" (the
-    change against the comparison, same kind, written to the same precision
-    as the value) and "versus" (what it is compared with, such as "vs last
-    year").
+    change against the comparison, same kind and precision as the value unless
+    "delta_kind" names another, such as "percent" for a change from last year)
+    and "versus" (what it is compared with, such as "vs last year").
     """
     for column, tile in zip(st.columns(len(tiles)), tiles):
         delta = None
         if tile.get("delta") is not None:
             sign = "+" if float(tile["delta"]) >= 0 else "-"
-            precision = _kind(tile["kind"], float(tile["value"]))
+            delta_kind = tile.get("delta_kind", tile["kind"])
+            basis = tile["value"] if delta_kind == tile["kind"] else tile["delta"]
+            precision = _kind(delta_kind, float(basis))
             delta = sign + _PY[precision].format(abs(float(tile["delta"])))
             if tile.get("versus"):
                 delta += f" {tile['versus']}"

@@ -1,9 +1,8 @@
-"""The dashboard's screens. Run it with:  streamlit run streamlit_app.py
+"""The dashboard's four screens. Run it with:  streamlit run streamlit_app.py
 
-This page is the template's starting point. It proves the connection works
-and shows one example chart on vinyl_vault. Replace it with the screens your
-spec describes and design.md draws; keep every query in dashboard/metrics.py
-and draw every chart with dashboard/charts.py.
+Each screen opens with a one-sentence takeaway and a row of headline numbers,
+as design.md draws it. Every query lives in dashboard/metrics.py and every
+headline and tile is drawn by dashboard/charts.py.
 
 Rule for a public app on a shared login: no box where a viewer can type SQL.
 Filters (dropdowns, sliders, dates) pass values to the queries as parameters.
@@ -13,34 +12,154 @@ import streamlit as st
 
 from dashboard import charts, db, metrics
 
-st.set_page_config(page_title="Dashboard", layout="wide")
+st.set_page_config(page_title="Music store revenue", layout="wide")
 
 
-# Cached for ten minutes: every viewer shares one answer instead of each
-# sending the same query to the server.
+# Each loader is cached for ten minutes: every viewer shares one answer
+# instead of each sending the same query to the server.
 @st.cache_data(ttl=600)
-def load_about():
-    return metrics.about(db.get_engine())
+def load_grand_total():
+    return metrics.grand_total(db.get_engine())
 
 
 @st.cache_data(ttl=600)
-def load_revenue_by_genre():
-    return metrics.revenue_by_genre(db.get_engine())
+def load_finance_gap():
+    return metrics.finance_gap(db.get_engine())
 
 
-st.title("Dashboard Starter")
+@st.cache_data(ttl=600)
+def load_genres():
+    return metrics.genre_revenue_share(db.get_engine())
 
-about = load_about()
-st.success(f"Connected to **{about.loc[0, 'display_name']}**: {about.loc[0, 'description']}")
 
-if db.get_engine().url.database == "vinyl_vault":
-    revenue = load_revenue_by_genre()
-    top = revenue.iloc[0]
-    share = float(top["revenue"]) / float(revenue["revenue"].sum())
+@st.cache_data(ttl=600)
+def load_countries():
+    return metrics.country_revenue_share(db.get_engine())
+
+
+@st.cache_data(ttl=600)
+def load_yearly():
+    return metrics.yearly_revenue(db.get_engine())
+
+
+@st.cache_data(ttl=600)
+def load_top10_customers():
+    return metrics.top10_customers(db.get_engine())
+
+
+@st.cache_data(ttl=600)
+def load_top10_years():
+    return metrics.top10_years_active(db.get_engine())
+
+
+@st.cache_data(ttl=600)
+def load_rep_revenue():
+    return metrics.rep_revenue(db.get_engine())
+
+
+@st.cache_data(ttl=600)
+def load_rep_customers():
+    return metrics.rep_customers(db.get_engine())
+
+
+def gap_tile() -> dict:
+    """The "Gap vs. Finance" tile every screen ends its row with."""
+    return {"label": "Gap vs Finance", "value": float(load_finance_gap().loc[0, "gap"]), "kind": "money"}
+
+
+def where_the_money_comes_from():
+    # The sidebar area where the year picker will go (Screen 1 only).
+    st.sidebar.subheader("Year")
+    st.sidebar.caption("All years")
+
+    genres = load_genres()
+    countries = load_countries()
+    total = float(load_grand_total().loc[0, "revenue"])
+    gap = float(load_finance_gap().loc[0, "gap"])
+    top_genre, top_country = genres.iloc[0], countries.iloc[0]
+
     charts.headline(
-        f"{top['genre']} earns {charts.fmt(share, 'percent')} of revenue",
-        "Revenue (unit price × quantity) by genre, all invoices. Top ten genres.",
+        f"{top_genre['genre']} and {top_country['country']} carry the most revenue",
+        "Revenue (unit price × quantity), all invoices, all years.",
     )
-    charts.show(charts.ranked_bar(revenue, "genre", "revenue"))
-else:
-    st.info("Your database is connected. Build the screens your spec describes here.")
+    charts.kpi_row([
+        {"label": "Total revenue", "value": total, "kind": "money", "delta": gap, "versus": "vs Finance"},
+        {"label": f"Top genre: {top_genre['genre']}", "value": top_genre["share_pct"] / 100, "kind": "percent"},
+        {"label": f"Top country: {top_country['country']}", "value": top_country["share_pct"] / 100, "kind": "percent"},
+        gap_tile(),
+    ])
+
+
+def growth():
+    yearly = load_yearly()
+    last_full, so_far = yearly.iloc[-2], yearly.iloc[-1]
+
+    charts.headline(
+        f"Revenue has stayed between {charts.fmt(yearly['revenue'].min(), 'money')} and "
+        f"{charts.fmt(yearly['revenue'].max(), 'money')} a year since {int(yearly.iloc[0]['year'])}",
+        "Revenue (unit price × quantity) by calendar year, all invoices.",
+    )
+    charts.kpi_row([
+        {"label": f"{int(last_full['year'])} vs {int(last_full['year']) - 1}", "value": last_full["revenue"],
+         "kind": "money", "delta": last_full["change_pct"] / 100, "delta_kind": "percent"},
+        {"label": f"{int(so_far['year'])} so far vs {int(so_far['year']) - 1}", "value": so_far["revenue"],
+         "kind": "money", "delta": so_far["change_pct"] / 100, "delta_kind": "percent"},
+        {"label": f"{len(yearly)}-year average", "value": yearly["revenue"].mean(), "kind": "money"},
+        gap_tile(),
+    ])
+    st.caption(f"{int(so_far['year'])} is not a full year: it ends 22 Dec.")
+
+
+def customers():
+    top = load_top10_customers()
+    years = load_top10_years()
+    all_customers = int(load_rep_customers()["customers"].sum())
+    share = top["share_pct"].sum() / 100
+    even = len(top) / all_customers
+    all_five = int((years["years_active"] == 5).sum())
+
+    charts.headline(
+        f"The top {len(top)} customers bring in {charts.fmt(share, 'percent')} of revenue",
+        "Revenue (unit price × quantity) by customer, all invoices, full period; ties for 10th place included.",
+    )
+    charts.kpi_row([
+        {"label": f"Top-{len(top)} share", "value": share, "kind": "percent", "delta": share - even,
+         "versus": f"vs {charts.fmt(even, 'percent')} if even"},
+        {"label": f"Top-{len(top)} revenue", "value": top["revenue"].sum(), "kind": "money"},
+        {"label": f"Bought all 5 years (of {len(years)})", "value": all_five, "kind": "count"},
+        gap_tile(),
+    ])
+
+
+def sales_reps():
+    revenue = load_rep_revenue()
+    reps = load_rep_customers()
+    per_customer = revenue["revenue"].sum() / reps["customers"].sum()
+    best = reps.loc[reps["revenue_per_customer"].idxmax()]
+    top_rep = revenue.iloc[0]
+
+    charts.headline(
+        f"{top_rep['rep']}'s customers bring in the most: {charts.fmt(top_rep['revenue'], 'money')}",
+        "Revenue (unit price × quantity) from each sales rep's customers, all invoices, full period.",
+    )
+    charts.kpi_row([
+        {"label": "Avg per customer", "value": per_customer, "kind": "cents"},
+        {"label": f"Top per customer: {best['rep']}", "value": best["revenue_per_customer"], "kind": "cents",
+         "delta": best["revenue_per_customer"] - per_customer, "versus": "vs avg"},
+        {"label": "Avg customers per rep", "value": reps["customers"].mean(), "kind": "count"},
+        gap_tile(),
+    ])
+
+
+# Navigation runs along the top, so the sidebar exists only where a screen
+# puts a filter there (Screen 1's year picker).
+pages = st.navigation(
+    [
+        st.Page(where_the_money_comes_from, title="Where the money comes from", url_path="money", default=True),
+        st.Page(growth, title="Growth", url_path="growth"),
+        st.Page(customers, title="Customers", url_path="customers"),
+        st.Page(sales_reps, title="Sales reps", url_path="reps"),
+    ],
+    position="top",
+)
+pages.run()
