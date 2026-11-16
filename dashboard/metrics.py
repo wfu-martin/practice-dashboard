@@ -99,3 +99,15 @@ def genre_revenue_share(engine: sqlalchemy.Engine, year: int | None = None) -> p
         """,
         {"year": year},
     )
+
+
+def country_revenue_share(engine: sqlalchemy.Engine, year: int | None = None) -> pd.DataFrame:
+    """Revenue and share of total for each billing country, largest first.
+
+    Revenue = unit price x quantity over every invoice line. Country is the
+    invoice's billing country. Share is the country's revenue as a percentage
+    of all country revenue in view (0 to 100). `year` limits the figures to
+    invoices dated in that calendar year; None means all years.
+    Granularity: one row per country, columns `country`, `revenue`, `share_pct`.
+    """
+    raise NotImplementedError("Issue #8")
