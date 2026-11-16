@@ -351,3 +351,16 @@ def rep_customers(engine: sqlalchemy.Engine) -> pd.DataFrame:
         ORDER BY customers DESC, rep
         """,
     )
+
+
+def breakdown_totals(engine: sqlalchemy.Engine) -> pd.DataFrame:
+    """What each breakdown of revenue adds up to, to tie back to Finance.
+
+    Adds up the rows of the genre, country, year, and rep revenue figures
+    (genre_revenue_share, country_revenue_share, yearly_revenue, rep_revenue),
+    all years, so each total can be compared with the 2,328.60 grand total.
+    Granularity: one row per breakdown, in the order genre, country, year,
+    rep, columns `breakdown`, `groups` (rows in that breakdown), `revenue`
+    (their sum).
+    """
+    raise NotImplementedError("Issue #16")
