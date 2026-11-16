@@ -39,6 +39,22 @@ def fmt(value, kind: str) -> str:
     return _PY[_kind(kind, float(value))].format(float(value))
 
 
+def fmt_signed(value, kind: str) -> str:
+    """Like fmt, with the sign taken from the number: +7.1% or -5.6%, never +-5.6%."""
+    sign = "+" if float(value) >= 0 else "-"
+    return sign + fmt(abs(float(value)), kind)
+
+
+def note(text: str) -> None:
+    """A short caption on its own, such as a footnote under a row of tiles."""
+    st.caption(text.replace("$", r"\$"))
+
+
+def total_caption(total, first, last) -> None:
+    """The grand total and the dates it covers, so every screen shows the number that ties to Finance."""
+    note(f"Total revenue {fmt(total, 'money')}, {pd.Timestamp(first):%Y-%m-%d} to {pd.Timestamp(last):%Y-%m-%d}")
+
+
 def headline(takeaway: str, note: str = "") -> None:
     """A section's headline: the takeaway as a sentence, then what it measures.
 
@@ -57,7 +73,8 @@ def kpi_row(tiles: list[dict]) -> None:
     Each tile is {"label", "value", "kind"} plus, optionally, "delta" (the
     change against the comparison, same kind and precision as the value unless
     "delta_kind" names another, such as "percent" for a change from last year)
-    and "versus" (what it is compared with, such as "vs last year").
+    and "versus" (what it is compared with, such as "vs last year"). An
+    optional "note" is a short caption under the tile.
     """
     for column, tile in zip(st.columns(len(tiles)), tiles):
         delta = None
@@ -70,6 +87,8 @@ def kpi_row(tiles: list[dict]) -> None:
             if tile.get("versus"):
                 delta += f" {tile['versus']}"
         column.metric(tile["label"], fmt(tile["value"], tile["kind"]), delta)
+        if tile.get("note"):
+            column.caption(tile["note"])
 
 
 def ranked_bar(
@@ -203,6 +222,9 @@ a.back-to-top:focus-visible {{ outline: 3px solid {TEXT}; outline-offset: 2px; }
 
 # Streamlit scrolls inside its own main container, not the browser window, and a
 # plain link to "#" would not move it. This listener scrolls that container.
+# After upgrading Streamlit, click Back to top in a browser: the script finds the
+# scroll area by its test id (stMain), and if Streamlit renames it the click
+# silently does nothing (the tests only check the button is present).
 _BACK_TO_TOP_JS = """
 <script>
 if (!window.__backToTopReady) {

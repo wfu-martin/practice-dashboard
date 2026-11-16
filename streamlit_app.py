@@ -29,6 +29,22 @@ def load_year_total(year: int | None):
 
 
 @st.cache_data(ttl=600)
+def load_grand_total():
+    return metrics.grand_total(db.get_engine())
+
+
+@st.cache_data(ttl=600)
+def load_date_range():
+    return metrics.invoice_date_range(db.get_engine())
+
+
+def total_caption():
+    """Under a headline: the grand total and the dates it covers (the number that ties to Finance)."""
+    dates = load_date_range()
+    charts.total_caption(float(load_grand_total().loc[0, "revenue"]), dates.loc[0, "first_date"], dates.loc[0, "last_date"])
+
+
+@st.cache_data(ttl=600)
 def load_finance_gap():
     return metrics.finance_gap(db.get_engine())
 
@@ -83,9 +99,16 @@ def load_rep_customers():
     return metrics.rep_customers(db.get_engine())
 
 
-def gap_tile() -> dict:
-    """The "Gap vs. Finance" tile every screen ends its row with."""
-    return {"label": "Gap vs Finance", "value": float(load_finance_gap().loc[0, "gap"]), "kind": "money"}
+def gap_tile(year: int | None = None) -> dict:
+    """The "Gap vs. Finance" tile every screen ends its row with.
+
+    With one year picked on Screen 1 a note says the gap still covers every
+    year, so $0.00 is not read as that year's gap.
+    """
+    tile = {"label": "Gap vs Finance", "value": float(load_finance_gap().loc[0, "gap"]), "kind": "money"}
+    if year is not None:
+        tile["note"] = f"Covers every year, not only {year}"
+    return tile
 
 
 def finance_section():
@@ -140,7 +163,7 @@ def where_the_money_comes_from():
         total_tile(year, total, gap),
         {"label": f"Top genre: {top_genre['genre']}", "value": top_genre["share_pct"] / 100, "kind": "percent"},
         {"label": f"Top country: {top_country['country']}", "value": top_country["share_pct"] / 100, "kind": "percent"},
-        gap_tile(),
+        gap_tile(year),
     ])
     share_bars(
         f"{top_genre['genre']} earns {charts.fmt(top_genre['share_pct'] / 100, 'percent')} of revenue",
@@ -166,12 +189,15 @@ def where_the_money_comes_from():
 def growth():
     yearly = load_yearly()
     last_full, so_far = yearly.iloc[-2], yearly.iloc[-1]
+    last_day = pd.Timestamp(load_date_range().loc[0, "last_date"])
+    ends = f"ends {last_day.day} {last_day:%b}"  # the data stops mid-month: the last year is not a full one
 
     charts.headline(
         f"Revenue has stayed between {charts.fmt(yearly['revenue'].min(), 'money')} and "
         f"{charts.fmt(yearly['revenue'].max(), 'money')} a year since {int(yearly.iloc[0]['year'])}",
         "Revenue (unit price × quantity) by calendar year, all invoices.",
     )
+    total_caption()
     charts.kpi_row([
         {"label": f"{int(last_full['year'])} vs {int(last_full['year']) - 1}", "value": last_full["revenue"],
          "kind": "money", "delta": last_full["change_pct"] / 100, "delta_kind": "percent"},
@@ -180,16 +206,16 @@ def growth():
         {"label": f"{len(yearly)}-year average", "value": yearly["revenue"].mean(), "kind": "money"},
         gap_tile(),
     ])
-    st.caption(f"{int(so_far['year'])} is not a full year: it ends 22 Dec.")
+    charts.note(f"{int(so_far['year'])} is not a full year: it {ends}.")
 
     # Yearly line and table (question 4). Years are text so the axis shows
     # 2021, 2022, ... and never 2021.5.
     changes = yearly["change_pct"].dropna()
     charts.headline(
         f"Yearly revenue moved between {charts.fmt(changes.min() / 100, 'percent')} "
-        f"and +{charts.fmt(changes.max() / 100, 'percent')}",
+        f"and {charts.fmt_signed(changes.max() / 100, 'percent')}",
         f"Revenue by calendar year, {int(yearly.iloc[0]['year'])}-{int(so_far['year'])}; "
-        f"{int(so_far['year'])} ends 22 Dec.",
+        f"{int(so_far['year'])} {ends}.",
     )
     by_year = yearly.assign(year=yearly["year"].astype(str), revenue=yearly["revenue"].astype(float))
     charts.show(charts.trend_line(by_year, "year", "revenue", label_points=True))
@@ -224,17 +250,19 @@ def customers():
     all_customers = int(load_rep_customers()["customers"].sum())
     share = top["share_pct"].sum() / 100
     even = len(top) / all_customers
-    all_five = int((years["years_active"] == 5).sum())
+    period_years = len(load_yearly())  # the calendar years the data covers
+    all_years = int((years["years_active"] == period_years).sum())
 
     charts.headline(
         f"The top {len(top)} customers bring in {charts.fmt(share, 'percent')} of revenue",
         "Revenue (unit price × quantity) by customer, all invoices, full period; ties for 10th place included.",
     )
+    total_caption()
     charts.kpi_row([
         {"label": f"Top-{len(top)} share", "value": share, "kind": "percent", "delta": share - even,
          "versus": f"vs {charts.fmt(even, 'percent')} if even"},
         {"label": f"Top-{len(top)} revenue", "value": top["revenue"].sum(), "kind": "money"},
-        {"label": f"Bought all 5 years (of {len(years)})", "value": all_five, "kind": "count"},
+        {"label": f"Bought all {period_years} years (of {len(years)})", "value": all_years, "kind": "count"},
         gap_tile(),
     ])
 
@@ -244,19 +272,19 @@ def customers():
     charts.headline(
         f"Top {len(top)} customers bring in {charts.fmt(top_revenue, 'money')}, "
         f"{charts.fmt(share, 'percent')} of total",
-        "Revenue by customer, full period, top 10 (ties included).",
+        f"Revenue by customer, full period, top {len(bars)} (ties included).",
     )
     charts.show(charts.ranked_bar(bars, "Customer", "revenue", top=len(bars)))
 
     # Years bought, from the top (question 7).
     charts.headline(
-        f"{all_five} of the top {len(years)} bought in all 5 years",
-        "Years with at least one invoice, top 10 customers.",
+        f"{all_years} of the top {len(years)} bought in all {period_years} years",
+        f"Years with at least one invoice, top {len(years)} customers.",
     )
     st.dataframe(
         pd.DataFrame({
             "Customer": years["customer"],
-            "Years bought (of 5)": years["years_active"].astype(int),
+            f"Years bought (of {period_years})": years["years_active"].astype(int),
         }),
         hide_index=True,
         width="stretch",
@@ -275,6 +303,7 @@ def sales_reps():
         f"{top_rep['rep']}'s customers bring in the most: {charts.fmt(top_rep['revenue'], 'money')}",
         "Revenue (unit price × quantity) from each sales rep's customers, all invoices, full period.",
     )
+    total_caption()
     charts.kpi_row([
         {"label": "Avg per customer", "value": per_customer, "kind": "cents"},
         {"label": f"Top per customer: {best['rep']}", "value": best["revenue_per_customer"], "kind": "cents",
