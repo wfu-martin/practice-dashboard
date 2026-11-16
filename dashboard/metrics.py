@@ -260,4 +260,35 @@ def top10_years_active(engine: sqlalchemy.Engine) -> pd.DataFrame:
     Granularity: one row per customer, largest revenue first, columns
     `customer_id`, `customer` (first and last name), `years_active` (1 to 5).
     """
-    raise NotImplementedError("Issue #13")
+    return read_sql(
+        engine,
+        """
+        WITH customer_revenue AS (
+            SELECT i.customer_id,
+                   SUM(il.unit_price * il.quantity) AS revenue
+            FROM invoice_line AS il
+            JOIN invoice AS i ON i.invoice_id = il.invoice_id
+            GROUP BY i.customer_id
+        ),
+        ranked AS (
+            SELECT customer_id,
+                   revenue,
+                   RANK() OVER (ORDER BY revenue DESC) AS revenue_rank
+            FROM customer_revenue
+        ),
+        years AS (
+            SELECT customer_id,
+                   COUNT(DISTINCT EXTRACT(YEAR FROM invoice_date)) AS years_active
+            FROM invoice
+            GROUP BY customer_id
+        )
+        SELECT c.customer_id,
+               c.first_name || ' ' || c.last_name AS customer,
+               y.years_active
+        FROM ranked AS t
+        JOIN years AS y ON y.customer_id = t.customer_id
+        JOIN customer AS c ON c.customer_id = t.customer_id
+        WHERE t.revenue_rank <= 10
+        ORDER BY t.revenue DESC, customer
+        """,
+    )
