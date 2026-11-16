@@ -127,9 +127,9 @@ course database is sample data), not "Customer A".
 ```
  SIDEBAR            Jane's customers bring in the most: $833
  (no filters)       ----------------------------------------------------
-                    [Avg per customer ] [Top per customer ] [Avg customers/rep] [Gap vs Finance]
+                    [Average per customer] [Top per customer ] [Average customers/rep] [Gap vs Finance]
                     [$39.47           ] [Steve $40.01     ] [20               ] [$0.00         ]
-                                        [+$0.54 vs avg  ]
+                                        [+$0.54 vs average]
 
                     Jane's customers bring in $833, Steve's $720    <- Q8, ranked bars
                     Revenue from each rep's customers, full period
