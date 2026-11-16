@@ -24,11 +24,18 @@ def _script():
     from dashboard import metrics
 
     if os.environ.get("ADD_YEAR_WITHOUT_INVOICES"):  # a choice that leaves no rows
-        real = metrics.available_years
-        metrics.available_years = lambda engine: pd.concat(
-            [pd.DataFrame({"year": [int(os.environ["ADD_YEAR_WITHOUT_INVOICES"])]}), real(engine)],
-            ignore_index=True,
-        )
+        # Build the patch once from the original function: this script runs again
+        # on every interaction, and a patch built from a patch would stack.
+        real = getattr(metrics.available_years, "real", metrics.available_years)
+
+        def with_extra_year(engine):
+            extra = os.environ.get("ADD_YEAR_WITHOUT_INVOICES")
+            if not extra:  # the patch outlives its test; add nothing then
+                return real(engine)
+            return pd.concat([pd.DataFrame({"year": [int(extra)]}), real(engine)], ignore_index=True)
+
+        with_extra_year.real = real
+        metrics.available_years = with_extra_year
 
     pages = []
     real_page = st.Page
@@ -100,7 +107,11 @@ def test_ac2_screen1_year_2023_total_and_top_genre(engine):
     assert _tiles(app)["Top genre: Rock"][0] == "33.3%"
     assert any(h.value.startswith("Rock earns 33.3% of revenue") for h in app.subheader)
     assert any("2023" in c.value for c in app.caption)
-    assert not any("all years" in c.value for c in app.caption)
+    # The Check against Finance caption is always the full period, so it is left out.
+    assert not any(
+        "all years" in c.value and not c.value.startswith("Each breakdown of revenue")
+        for c in app.caption
+    )
     assert float(scalar(engine, "SELECT SUM(total) FROM invoice WHERE EXTRACT(YEAR FROM invoice_date) = 2023")) == 469.58
 
 
