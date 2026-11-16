@@ -130,3 +130,39 @@ def test_ac3_country_bars_reconcile_to_invoice_totals(engine):
     expected = [(r.country, round(100 * float(r.revenue) / finance, 1)) for r in top.itertuples()]
     trace = _find(_bars(_open_screen_1()), "USA")
     assert _shares(trace) == expected
+
+
+def _combos(trace: dict) -> list[tuple[str, float]]:
+    return [(label, round(float(x), 2)) for label, x in zip(trace["y"], trace["x"])]
+
+
+def test_ac4_screen1_combination_bars(engine):
+    # Given all years are selected, when Screen 1 loads, then ranked bars show the
+    # top ten country-and-genre combinations in dollars, largest first.
+    app = _open_screen_1()
+    assert not app.exception
+    trace = _find(_bars(app), "USA - Rock")
+    combos = _combos(trace)
+    assert len(combos) == 10
+    assert combos[:3] == [("USA - Rock", 155.43), ("Canada - Rock", 105.93), ("USA - Latin", 90.09)]
+    assert [v for _, v in combos] == sorted((v for _, v in combos), reverse=True)
+    assert trace["orientation"] == "h"
+    assert trace["texttemplate"] == "%{x:$,.0f}"  # whole dollars
+    assert any(h.value.startswith("USA Rock is the biggest single combination") for h in app.subheader)
+
+
+def test_ac4_combination_bars_reconcile_to_invoice_lines(engine):
+    # Reconciliation: each bar equals that country's and genre's invoice-line
+    # revenue summed straight from the line, track, and invoice tables.
+    top = read_sql(
+        engine,
+        "SELECT i.billing_country || ' - ' || g.name AS label, "
+        "ROUND(SUM(il.unit_price * il.quantity), 2) AS revenue "
+        "FROM invoice_line AS il, invoice AS i, track AS t, genre AS g "
+        "WHERE il.invoice_id = i.invoice_id AND il.track_id = t.track_id "
+        "AND t.genre_id = g.genre_id "
+        "GROUP BY i.billing_country, g.name ORDER BY revenue DESC, g.name, i.billing_country LIMIT 10",
+    )
+    expected = [(r.label, float(r.revenue)) for r in top.itertuples()]
+    trace = _find(_bars(_open_screen_1()), "USA - Rock")
+    assert _combos(trace) == expected
