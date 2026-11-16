@@ -159,8 +159,8 @@ the edge of a full-width chart on a phone-width screen.
   comparison: last year, a target, or the average.
 - Then one section per framed question, in the order the stakeholder's
   decision needs them.
-- Filters sit in the sidebar and apply to the whole screen. Their defaults
-  show the most recent complete period.
+- Filters sit in the sidebar and apply to the whole screen. The year picker
+  on Screen 1 defaults to All years, as `spec.md` says.
 
 ### Choosing a chart
 
