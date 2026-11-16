@@ -129,7 +129,7 @@ The even-split figure is 10 divided by the customer count (10 of 59 = 16.9%).
                     Margaret ███████████   $775
                     Steve    ██████████    $720
 
-                    Revenue per customer is within $1.40 across reps <- Q9, table
+                    Revenue per customer is within $1.24 across reps <- Q9, table
                     Customers and revenue per customer, full period
                     Rep      | Customers | Revenue per customer
                     Jane     | 21        | $39.67   ... (3 rows)
