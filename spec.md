@@ -79,6 +79,8 @@ Every screen shows the grand total revenue and the date range it covers, so Morg
 
 Every screen has a floating back-to-top button in the bottom-right corner. It is not a filter: it changes no numbers.
 
+On the Customers screen, customers are labeled by first and last name (the course database is sample data).
+
 ## Acceptance criteria
 
 - **AC-1** (question 1): Given all years are selected, when Screen 1 loads, then the top five genres by revenue are Rock 826.65 (35.5%), Latin 382.14 (16.4%), Metal 261.36 (11.2%), Alternative & Punk 241.56 (10.4%), and TV Shows 93.53 (4.0%).

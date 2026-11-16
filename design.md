@@ -114,6 +114,9 @@ metric, the period and the filters.
 
 The even-split figure is 10 divided by the customer count (10 of 59 = 16.9%).
 
+On the Customers screen, customers are labeled by first and last name (the
+course database is sample data), not "Customer A".
+
 **Screen 4. Sales reps** (questions 8, 9, 10)
 
 ```
