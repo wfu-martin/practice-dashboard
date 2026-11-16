@@ -211,6 +211,30 @@ def customers():
         {"label": f"Bought all 5 years (of {len(years)})", "value": all_five, "kind": "count"},
         gap_tile(),
     ])
+
+    # Ranked bars of the top customers (question 6).
+    bars = top.assign(revenue=top["revenue"].astype(float)).rename(columns={"customer": "Customer"})
+    top_revenue = bars["revenue"].sum()
+    charts.headline(
+        f"Top {len(top)} customers bring in {charts.fmt(top_revenue, 'money')}, "
+        f"{charts.fmt(share, 'percent')} of total",
+        "Revenue by customer, full period, top 10 (ties included).",
+    )
+    charts.show(charts.ranked_bar(bars, "Customer", "revenue", top=len(bars)))
+
+    # Years bought, from the top (question 7).
+    charts.headline(
+        f"{all_five} of the top {len(years)} bought in all 5 years",
+        "Years with at least one invoice, top 10 customers.",
+    )
+    st.dataframe(
+        pd.DataFrame({
+            "Customer": years["customer"],
+            "Years bought (of 5)": years["years_active"].astype(int),
+        }),
+        hide_index=True,
+        width="stretch",
+    )
     finance_section()
 
 
