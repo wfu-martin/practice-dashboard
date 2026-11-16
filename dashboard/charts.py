@@ -195,8 +195,7 @@ a.back-to-top {{
     background: {ACCENT}; color: #FFFFFF !important; font-size: 0.85rem;
     text-decoration: none !important; box-shadow: 0 1px 4px rgba(0,0,0,0.3);
 }}
-a.back-to-top:hover, a.back-to-top:focus-visible {{ background: #174A85; }}
-a.back-to-top:focus-visible {{ outline: 3px solid #1F2933; outline-offset: 2px; }}
+a.back-to-top:focus-visible {{ outline: 3px solid {TEXT}; outline-offset: 2px; }}
 /* Room at the foot of every page so the button never rests on the last content. */
 [data-testid="stMainBlockContainer"] {{ padding-bottom: 5rem; }}
 </style>
