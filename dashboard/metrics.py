@@ -140,4 +140,21 @@ def genre_country_revenue(
     Granularity: one row per genre and country, columns `genre`, `country`,
     `revenue`.
     """
-    raise NotImplementedError("Issue #9")
+    return read_sql(
+        engine,
+        """
+        SELECT g.name AS genre,
+               i.billing_country AS country,
+               SUM(il.unit_price * il.quantity) AS revenue
+        FROM invoice_line AS il
+        JOIN invoice AS i ON i.invoice_id = il.invoice_id
+        JOIN track AS t ON t.track_id = il.track_id
+        JOIN genre AS g ON g.genre_id = t.genre_id
+        WHERE CAST(:year AS integer) IS NULL
+           OR EXTRACT(YEAR FROM i.invoice_date) = CAST(:year AS integer)
+        GROUP BY g.name, i.billing_country
+        ORDER BY revenue DESC, genre, country
+        LIMIT :limit
+        """,
+        {"year": year, "limit": limit},
+    )
