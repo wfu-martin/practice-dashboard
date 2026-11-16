@@ -57,7 +57,6 @@ You do this once, during the roadmap's hello-world deploy task; `/dashkit:build-
 | `briefs/vinyl-vault-email.md` | The practice request, for the `vinyl_vault` dashboard: `/dashkit:spec briefs/vinyl-vault-email.md` |
 | `spec.md` | What to build (written with `/dashkit:spec`) |
 | `design.md` | Each screen as drawn, and the style rules (screens drawn with `/dashkit:design`) |
-| `mockup.py` | The screens with made-up numbers, for sign-off before building (`streamlit run mockup.py`) |
 | `ROADMAP.md` | Phases and critical path (written with `/dashkit:roadmap`) |
 | `ROLES.md` | Who owns what |
 | `CLAUDE.md` | What Claude Code reads at the start of every session |
