@@ -188,3 +188,15 @@ def yearly_revenue(engine: sqlalchemy.Engine) -> pd.DataFrame:
         ORDER BY year
         """,
     )
+
+
+def monthly_revenue(engine: sqlalchemy.Engine) -> pd.DataFrame:
+    """Revenue for each calendar month, oldest first.
+
+    Revenue = unit price x quantity over every invoice line, grouped by the
+    invoice's calendar month. Always the full period (January 2021 to
+    December 2025), whatever year is picked on Screen 1.
+    Granularity: one row per month, columns `month` (first day of the month)
+    and `revenue`.
+    """
+    raise NotImplementedError("Issue #11")
