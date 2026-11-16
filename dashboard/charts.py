@@ -187,6 +187,11 @@ def nothing_to_show(what: str = "these filters") -> None:
     st.info(f"No data for {what}. Widen the filters to see results.")
 
 
+def back_to_top() -> None:
+    """Draw the floating 'Back to top' button, bottom-right, once per screen."""
+    raise NotImplementedError("Issue #48")
+
+
 def _house(fig: go.Figure, height: int) -> go.Figure:
     fig.update_layout(
         height=height,
