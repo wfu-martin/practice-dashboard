@@ -323,3 +323,4 @@ pages = st.navigation(
     position="top",
 )
 pages.run()
+charts.back_to_top()  # the same floating button on every screen

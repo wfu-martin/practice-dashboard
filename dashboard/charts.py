@@ -187,9 +187,50 @@ def nothing_to_show(what: str = "these filters") -> None:
     st.info(f"No data for {what}. Widen the filters to see results.")
 
 
+_BACK_TO_TOP_CSS = f"""
+<style>
+a.back-to-top {{
+    position: fixed; right: 1rem; bottom: 1rem; z-index: 1000;
+    padding: 0.35rem 0.8rem; border-radius: 1rem;
+    background: {ACCENT}; color: #FFFFFF !important; font-size: 0.85rem;
+    text-decoration: none !important; box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}}
+a.back-to-top:hover, a.back-to-top:focus-visible {{ background: #174A85; }}
+a.back-to-top:focus-visible {{ outline: 3px solid #1F2933; outline-offset: 2px; }}
+/* Room at the foot of every page so the button never rests on the last content. */
+[data-testid="stMainBlockContainer"] {{ padding-bottom: 5rem; }}
+</style>
+"""
+
+# Streamlit scrolls inside its own main container, not the browser window, and a
+# plain link to "#" would not move it. This listener scrolls that container.
+_BACK_TO_TOP_JS = """
+<script>
+if (!window.__backToTopReady) {
+  window.__backToTopReady = true;
+  document.addEventListener("click", function (event) {
+    var link = event.target.closest && event.target.closest("a.back-to-top");
+    if (!link) { return; }
+    event.preventDefault();
+    var main = document.querySelector('[data-testid="stMain"]');
+    if (main) { main.scrollTo({ top: 0, behavior: "smooth" }); }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+}
+</script>
+"""
+
+
 def back_to_top() -> None:
-    """Draw the floating 'Back to top' button, bottom-right, once per screen."""
-    raise NotImplementedError("Issue #48")
+    """Draw the floating 'Back to top' button, bottom-right, once per screen.
+
+    Not a filter: it changes no numbers. A real link, so the keyboard reaches it.
+    """
+    st.markdown(
+        _BACK_TO_TOP_CSS + '<a class="back-to-top" href="#">Back to top</a>',
+        unsafe_allow_html=True,
+    )
+    st.html(_BACK_TO_TOP_JS, unsafe_allow_javascript=True)
 
 
 def _house(fig: go.Figure, height: int) -> go.Figure:
