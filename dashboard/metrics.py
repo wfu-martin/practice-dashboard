@@ -52,16 +52,17 @@ def revenue_by_genre(engine: sqlalchemy.Engine) -> pd.DataFrame:
     )
 
 
+# Revenue as the spec defines it: unit price x quantity over every invoice line.
+_LINE_REVENUE_SQL = "SELECT SUM(unit_price * quantity) AS revenue FROM invoice_line"
+
+
 def grand_total(engine: sqlalchemy.Engine) -> pd.DataFrame:
     """Total revenue across all years, the one number that ties to Finance.
 
     Revenue = unit price x quantity, added up over every invoice line.
     Granularity: one row, column `revenue`.
     """
-    return read_sql(
-        engine,
-        "SELECT SUM(unit_price * quantity) AS revenue FROM invoice_line",
-    )
+    return read_sql(engine, _LINE_REVENUE_SQL)
 
 
 def finance_gap(engine: sqlalchemy.Engine) -> pd.DataFrame:
@@ -72,11 +73,11 @@ def finance_gap(engine: sqlalchemy.Engine) -> pd.DataFrame:
     """
     return read_sql(
         engine,
-        """
+        f"""
         SELECT lines.revenue,
                invoices.finance_total,
                ROUND(lines.revenue - invoices.finance_total, 2) AS gap
-        FROM (SELECT SUM(unit_price * quantity) AS revenue FROM invoice_line) AS lines,
+        FROM ({_LINE_REVENUE_SQL}) AS lines,
              (SELECT SUM(total) AS finance_total FROM invoice) AS invoices
         """,
     )
