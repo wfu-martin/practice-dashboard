@@ -249,3 +249,15 @@ def top10_customers(engine: sqlalchemy.Engine) -> pd.DataFrame:
         ORDER BY revenue DESC, customer
         """,
     )
+
+
+def top10_years_active(engine: sqlalchemy.Engine) -> pd.DataFrame:
+    """Years bought for each of the top 10 customers (same set as top10_customers).
+
+    Years active = count of distinct calendar years with at least one invoice.
+    The customers are the top 10 by revenue over the full period, ties for 10th
+    place included, so the list can show 11.
+    Granularity: one row per customer, largest revenue first, columns
+    `customer_id`, `customer` (first and last name), `years_active` (1 to 5).
+    """
+    raise NotImplementedError("Issue #13")
