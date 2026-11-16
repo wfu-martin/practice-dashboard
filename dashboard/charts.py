@@ -103,8 +103,14 @@ def ranked_bar(
     return _house(fig, height=max(240, 34 * len(data) + 60))
 
 
-def trend_line(df: pd.DataFrame, date: str, value: str, kind: str = "money") -> go.Figure:
-    """Change over time: one line in the accent color, the latest value labeled."""
+def trend_line(
+    df: pd.DataFrame, date: str, value: str, kind: str = "money", label_points: bool = False
+) -> go.Figure:
+    """Change over time: one line in the accent color.
+
+    The latest value is labeled; with label_points, every point is (for a line
+    of only a few points, such as five years).
+    """
     data = df.sort_values(date)
     d3 = _D3[_kind(kind, data[value].abs().max())]
     fig = px.line(data, x=date, y=value)
@@ -112,13 +118,23 @@ def trend_line(df: pd.DataFrame, date: str, value: str, kind: str = "money") -> 
         line={"color": ACCENT, "width": 3},
         hovertemplate=f"%{{x}}: %{{y:{d3}}}<extra></extra>",
     )
-    last = data.iloc[-1]
-    fig.add_annotation(
-        x=last[date], y=last[value], text=fmt(last[value], kind),
-        showarrow=False, xanchor="left", xshift=8, font={"color": ACCENT, "size": 14},
-    )
+    if label_points:
+        fig.update_traces(
+            mode="lines+markers+text",
+            marker={"color": ACCENT, "size": 8},
+            texttemplate=f"%{{y:{d3}}}",
+            textposition="top center",
+            textfont={"color": ACCENT, "size": 14},
+            cliponaxis=False,
+        )
+    else:
+        last = data.iloc[-1]
+        fig.add_annotation(
+            x=last[date], y=last[value], text=fmt(last[value], kind),
+            showarrow=False, xanchor="left", xshift=8, font={"color": ACCENT, "size": 14},
+        )
     fig.update_xaxes(title=None, showgrid=False)
-    fig.update_yaxes(title=None, tickformat=d3, gridcolor="#ECEEF1")
+    fig.update_yaxes(title=None, tickformat=d3, gridcolor="#ECEEF1", rangemode="tozero")
     return _house(fig, height=320)
 
 

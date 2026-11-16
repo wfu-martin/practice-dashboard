@@ -8,6 +8,7 @@ Rule for a public app on a shared login: no box where a viewer can type SQL.
 Filters (dropdowns, sliders, dates) pass values to the queries as parameters.
 """
 
+import pandas as pd
 import streamlit as st
 
 from dashboard import charts, db, metrics
@@ -50,6 +51,11 @@ def load_combinations():
 @st.cache_data(ttl=600)
 def load_yearly():
     return metrics.yearly_revenue(db.get_engine())
+
+
+@st.cache_data(ttl=600)
+def load_monthly():
+    return metrics.monthly_revenue(db.get_engine())
 
 
 @st.cache_data(ttl=600)
@@ -149,6 +155,40 @@ def growth():
         gap_tile(),
     ])
     st.caption(f"{int(so_far['year'])} is not a full year: it ends 22 Dec.")
+
+    # Yearly line and table (question 4). Years are text so the axis shows
+    # 2021, 2022, ... and never 2021.5.
+    changes = yearly["change_pct"].dropna()
+    charts.headline(
+        f"Yearly revenue moved between {charts.fmt(changes.min() / 100, 'percent')} "
+        f"and +{charts.fmt(changes.max() / 100, 'percent')}",
+        f"Revenue by calendar year, {int(yearly.iloc[0]['year'])}-{int(so_far['year'])}; "
+        f"{int(so_far['year'])} ends 22 Dec.",
+    )
+    by_year = yearly.assign(year=yearly["year"].astype(str), revenue=yearly["revenue"].astype(float))
+    charts.show(charts.trend_line(by_year, "year", "revenue", label_points=True))
+    st.dataframe(
+        pd.DataFrame({
+            "Year": by_year["year"],
+            "Revenue": [charts.fmt(r, "money") for r in by_year["revenue"]],
+            "Change from prior year": [
+                "none" if pd.isna(c) else f"{c:+.1f}%" for c in yearly["change_pct"]
+            ],
+        }),
+        hide_index=True,
+        width="stretch",
+    )
+
+    # Monthly line (question 5).
+    monthly = load_monthly().astype({"revenue": float})
+    typical = monthly["revenue"].median()
+    charts.headline(
+        f"Monthly revenue is usually about {charts.fmt(typical, 'money')}, "
+        f"from {charts.fmt(monthly['revenue'].min(), 'money')} to {charts.fmt(monthly['revenue'].max(), 'money')}",
+        f"Revenue by calendar month, {pd.Timestamp(monthly['month'].iloc[0]):%b %Y}-"
+        f"{pd.Timestamp(monthly['month'].iloc[-1]):%b %Y}.",
+    )
+    charts.show(charts.trend_line(monthly.assign(month=pd.to_datetime(monthly["month"])), "month", "revenue"))
     finance_section()
 
 
