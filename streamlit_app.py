@@ -19,8 +19,13 @@ st.set_page_config(page_title="Music store revenue", layout="wide")
 # Each loader is cached for ten minutes: every viewer shares one answer
 # instead of each sending the same query to the server.
 @st.cache_data(ttl=600)
-def load_grand_total():
-    return metrics.grand_total(db.get_engine())
+def load_years():
+    return metrics.available_years(db.get_engine())
+
+
+@st.cache_data(ttl=600)
+def load_year_total(year: int | None):
+    return metrics.year_total(db.get_engine(), year)
 
 
 @st.cache_data(ttl=600)
@@ -34,18 +39,18 @@ def load_finance_check():
 
 
 @st.cache_data(ttl=600)
-def load_genres():
-    return metrics.genre_revenue_share(db.get_engine())
+def load_genres(year: int | None):
+    return metrics.genre_revenue_share(db.get_engine(), year)
 
 
 @st.cache_data(ttl=600)
-def load_countries():
-    return metrics.country_revenue_share(db.get_engine())
+def load_countries(year: int | None):
+    return metrics.country_revenue_share(db.get_engine(), year)
 
 
 @st.cache_data(ttl=600)
-def load_combinations():
-    return metrics.genre_country_revenue(db.get_engine(), limit=10)
+def load_combinations(year: int | None):
+    return metrics.genre_country_revenue(db.get_engine(), year, limit=10)
 
 
 @st.cache_data(ttl=600)
@@ -95,43 +100,64 @@ def share_bars(takeaway: str, note: str, data, label: str, label_name: str):
     charts.show(charts.ranked_bar(shares, label_name, "share", kind="percent", top=5))
 
 
-def where_the_money_comes_from():
-    # The sidebar area where the year picker will go (Screen 1 only).
-    st.sidebar.subheader("Year")
-    st.sidebar.caption("All years")
+ALL_YEARS = "All years"
 
-    genres = load_genres()
-    countries = load_countries()
-    total = float(load_grand_total().loc[0, "revenue"])
+
+def pick_year() -> int | None:
+    """The sidebar's Year dropdown: one calendar year, or None for all years."""
+    choice = st.sidebar.selectbox("Year", [ALL_YEARS] + [str(y) for y in load_years()["year"]])
+    return None if choice == ALL_YEARS else int(choice)
+
+
+def total_tile(year: int | None, total: float, gap: float) -> dict:
+    """Total revenue: against Finance for all years, against the average year for one."""
+    if year is None:
+        return {"label": "Total revenue", "value": total, "kind": "money", "delta": gap, "versus": "vs Finance"}
+    yearly_average = load_yearly()["revenue"].astype(float).mean()
+    return {"label": "Total revenue", "value": total, "kind": "money",
+            "delta": total - yearly_average, "versus": "vs yearly average"}
+
+
+def where_the_money_comes_from():
+    year = pick_year()
+    period = "all years" if year is None else str(year)
+
+    genres = load_genres(year)
+    if genres.empty:  # a year with no invoices
+        charts.nothing_to_show(period)
+        finance_section()
+        return
+    countries = load_countries(year)
+    total = float(load_year_total(year).loc[0, "revenue"])
     gap = float(load_finance_gap().loc[0, "gap"])
     top_genre, top_country = genres.iloc[0], countries.iloc[0]
 
     charts.headline(
         f"{top_genre['genre']} and {top_country['country']} carry the most revenue",
-        "Revenue (unit price × quantity), all invoices, all years.",
+        f"Revenue (unit price × quantity), all invoices, {period}.",
     )
     charts.kpi_row([
-        {"label": "Total revenue", "value": total, "kind": "money", "delta": gap, "versus": "vs Finance"},
+        total_tile(year, total, gap),
         {"label": f"Top genre: {top_genre['genre']}", "value": top_genre["share_pct"] / 100, "kind": "percent"},
         {"label": f"Top country: {top_country['country']}", "value": top_country["share_pct"] / 100, "kind": "percent"},
         gap_tile(),
     ])
     share_bars(
         f"{top_genre['genre']} earns {charts.fmt(top_genre['share_pct'] / 100, 'percent')} of revenue",
-        "Revenue by genre, all years, top 5, as a share of all revenue.",
+        f"Revenue by genre, {period}, top 5, as a share of all revenue.",
         genres, "genre", "Genre",
     )
     share_bars(
         f"{top_country['country']} earns {charts.fmt(top_country['share_pct'] / 100, 'percent')} of revenue",
-        "Revenue by billing country, all years, top 5, as a share of all revenue.",
+        f"Revenue by billing country, {period}, top 5, as a share of all revenue.",
         countries, "country", "Country",
     )
-    combinations = load_combinations().assign(Combination=lambda d: d["country"] + " - " + d["genre"])
+    combinations = load_combinations(year).assign(Combination=lambda d: d["country"] + " - " + d["genre"])
     top_combo = combinations.iloc[0]
     charts.headline(
         f"{top_combo['country']} {top_combo['genre']} is the biggest single combination: "
         f"{charts.fmt(top_combo['revenue'], 'money')}",
-        "Revenue (unit price × quantity) by billing country and genre, all years, top 10.",
+        f"Revenue (unit price × quantity) by billing country and genre, {period}, top 10.",
     )
     charts.show(charts.ranked_bar(combinations.astype({"revenue": float}), "Combination", "revenue"))
     finance_section()

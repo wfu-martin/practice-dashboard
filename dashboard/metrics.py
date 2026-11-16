@@ -60,7 +60,14 @@ def available_years(engine: sqlalchemy.Engine) -> pd.DataFrame:
     These are the choices in Screen 1's year picker.
     Granularity: one row per year, column `year`.
     """
-    raise NotImplementedError("Issue #24")
+    return read_sql(
+        engine,
+        """
+        SELECT DISTINCT CAST(EXTRACT(YEAR FROM invoice_date) AS integer) AS year
+        FROM invoice
+        ORDER BY year
+        """,
+    )
 
 
 def year_total(engine: sqlalchemy.Engine, year: int | None = None) -> pd.DataFrame:
@@ -69,7 +76,17 @@ def year_total(engine: sqlalchemy.Engine, year: int | None = None) -> pd.DataFra
     Revenue = unit price x quantity over every invoice line dated in that year.
     Granularity: one row, column `revenue` (empty total when the year has no invoices).
     """
-    raise NotImplementedError("Issue #24")
+    return read_sql(
+        engine,
+        """
+        SELECT SUM(il.unit_price * il.quantity) AS revenue
+        FROM invoice_line AS il
+        JOIN invoice AS i ON i.invoice_id = il.invoice_id
+        WHERE CAST(:year AS integer) IS NULL
+           OR EXTRACT(YEAR FROM i.invoice_date) = CAST(:year AS integer)
+        """,
+        {"year": year},
+    )
 
 
 def finance_gap(engine: sqlalchemy.Engine) -> pd.DataFrame:
