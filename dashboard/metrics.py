@@ -390,4 +390,23 @@ def finance_check(engine: sqlalchemy.Engine) -> pd.DataFrame:
     sum), `finance_total` (sum of invoice totals), `gap` (finance_total minus
     revenue, rounded to cents).
     """
-    raise NotImplementedError("Issue #18")
+    invoices = read_sql(
+        engine, "SELECT COUNT(*) AS groups, SUM(total) AS revenue FROM invoice"
+    ).iloc[0]
+    finance_total = float(invoices["revenue"])
+    table = pd.concat(
+        [
+            breakdown_totals(engine),
+            pd.DataFrame(
+                {
+                    "breakdown": ["invoices"],
+                    "groups": [int(invoices["groups"])],
+                    "revenue": [finance_total],
+                }
+            ),
+        ],
+        ignore_index=True,
+    )
+    table["finance_total"] = finance_total
+    table["gap"] = (table["finance_total"] - table["revenue"].astype(float)).round(2)
+    return table

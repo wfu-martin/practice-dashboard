@@ -122,6 +122,45 @@ def trend_line(df: pd.DataFrame, date: str, value: str, kind: str = "money") -> 
     return _house(fig, height=320)
 
 
+_FINANCE_ROWS = {
+    "genre": "By genre",
+    "country": "By country",
+    "year": "By year",
+    "rep": "By rep",
+    "invoices": "Sum of invoice totals",
+}
+
+
+def finance_check(table: pd.DataFrame) -> None:
+    """The collapsed "Check against Finance" section: group totals against Finance.
+
+    table: one row per breakdown with `breakdown`, `groups`, `revenue`,
+    `finance_total` and `gap` (metrics.finance_check). Exact values someone
+    will look up, so it is a table with cents, closed until opened.
+    """
+    shown = pd.DataFrame(
+        {
+            "Breakdown": table["breakdown"].map(_FINANCE_ROWS),
+            "Groups": table["groups"].astype(int),
+            "Revenue": table["revenue"].astype(float),
+            "Finance total": table["finance_total"].astype(float),
+            "Gap": table["gap"].astype(float),
+        }
+    )
+    money = st.column_config.NumberColumn(format="dollar", step=0.01)
+    with st.expander("Check against Finance", expanded=False):
+        st.caption(
+            "Each breakdown of revenue, all years, against Finance's total "
+            "(the sum of invoice totals). A gap of 0.00 means they tie out."
+        )
+        st.dataframe(
+            shown,
+            hide_index=True,
+            width="stretch",
+            column_config={"Revenue": money, "Finance total": money, "Gap": money},
+        )
+
+
 def show(fig: go.Figure) -> None:
     """Put a chart on the page, full width, without the toolbar."""
     st.plotly_chart(fig, width="stretch", config={"displayModeBar": False})

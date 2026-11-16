@@ -28,6 +28,11 @@ def load_finance_gap():
 
 
 @st.cache_data(ttl=600)
+def load_finance_check():
+    return metrics.finance_check(db.get_engine())
+
+
+@st.cache_data(ttl=600)
 def load_genres():
     return metrics.genre_revenue_share(db.get_engine())
 
@@ -67,6 +72,11 @@ def gap_tile() -> dict:
     return {"label": "Gap vs Finance", "value": float(load_finance_gap().loc[0, "gap"]), "kind": "money"}
 
 
+def finance_section():
+    """The collapsed "Check against Finance" section every screen ends with."""
+    charts.finance_check(load_finance_check())
+
+
 def where_the_money_comes_from():
     # The sidebar area where the year picker will go (Screen 1 only).
     st.sidebar.subheader("Year")
@@ -88,6 +98,7 @@ def where_the_money_comes_from():
         {"label": f"Top country: {top_country['country']}", "value": top_country["share_pct"] / 100, "kind": "percent"},
         gap_tile(),
     ])
+    finance_section()
 
 
 def growth():
@@ -108,6 +119,7 @@ def growth():
         gap_tile(),
     ])
     st.caption(f"{int(so_far['year'])} is not a full year: it ends 22 Dec.")
+    finance_section()
 
 
 def customers():
@@ -129,6 +141,7 @@ def customers():
         {"label": f"Bought all 5 years (of {len(years)})", "value": all_five, "kind": "count"},
         gap_tile(),
     ])
+    finance_section()
 
 
 def sales_reps():
@@ -149,6 +162,7 @@ def sales_reps():
         {"label": "Avg customers per rep", "value": reps["customers"].mean(), "kind": "count"},
         gap_tile(),
     ])
+    finance_section()
 
 
 # Navigation runs along the top, so the sidebar exists only where a screen
