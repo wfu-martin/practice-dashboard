@@ -191,6 +191,9 @@ the chart with the team before building it, and add a row here.
 - Averages per customer keep cents ($39.67) whatever their size, so close
   values can be told apart (`kind="cents"`).
 - Bars start at zero.
+- Line axes start at zero.
+- On a short line every point is labeled; otherwise the latest value is
+  labeled.
 
 ### Color
 
