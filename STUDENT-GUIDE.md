@@ -21,15 +21,17 @@ You do not need a GitHub account. The repository is public.
 Paste this:
 
 ```
-Clone https://github.com/wfu-martin/practice-dashboard.git into the current folder, then open the project folder it creates. List the files and folders and tell me in plain language what each one is for.
+Clone https://github.com/wfu-martin/practice-dashboard.git into the current folder, then open the project folder it creates. List the files and folders and tell me in plain language what each one is for. Tell me the full path of the project folder.
 ```
+
+The clone creates a subfolder named `practice-dashboard`. Close Claude Code and reopen it **inside that new folder**, because every later prompt that says "the project folder" must run there.
 
 ## Step 0B: Set up to run the apps (once)
 
 Paste this:
 
 ```
-In the project folder, set up a Python 3.12 environment for this project (use conda if I have it, otherwise a virtual environment) and install the packages listed in requirements.txt. Do not run any app yet. At the end, tell me the exact command I use to switch into this environment each time I come back to work.
+In the project folder, set up a Python 3.12 environment for this project (use conda if I have it, otherwise a virtual environment) and install the packages listed in requirements.txt. If Python 3.12 is not installed, tell me how to install it before you continue. Do not run any app yet. At the end, tell me the exact command I use to switch into this environment each time I come back to work.
 ```
 
 ## Stage 1: The spec (snapshot: stage-1-spec)
@@ -67,6 +69,8 @@ First stop any app that is still running. Then paste this:
 Switch to the version tagged stage-3-roadmap. What was added since stage-2-design? Read ROADMAP.md and explain the phases and the order of the work. Each task is a numbered GitHub Issue: explain how the tasks are grouped into phases and which ones must be finished first.
 ```
 
+There is no stage 4 snapshot: the guide goes from Stage 3 to Stage 5.
+
 Nothing new to run at this stage: the screens still look like the mockup. You can run the mockup again if you want to compare:
 
 ```
@@ -87,7 +91,7 @@ Switch to the version tagged stage-5-build-next. List what was added since stage
 To run the real dashboard, it needs the course database. Paste this:
 
 ```
-Copy .streamlit/secrets.toml.example to .streamlit/secrets.toml, then open the new file so I can edit it. Tell me which values I need to fill in. Do NOT ask me for my password here: I will type it into the file myself.
+Copy .streamlit/secrets.toml.example to .streamlit/secrets.toml, then open the new file in my default text editor so I can edit it (the .streamlit folder is hidden). Tell me which values I need to fill in. Do NOT ask me for my password here: I will type it into the file myself.
 ```
 
 Type your database login values into the file and save it. The file stays on your computer only; it is never shared. Then paste this:
@@ -117,7 +121,7 @@ Compare the clickable mockup I ran at stage 2 with the finished dashboard I just
 
 ## Compare any two stages
 
-Paste this (change the two names to the stages you want):
+First stop any app that is still running. Then paste this (change the two names to the stages you want):
 
 ```
 Show me what changed between stage-2-design and stage-3-roadmap, file by file, and summarize the changes in plain language.
@@ -125,7 +129,7 @@ Show me what changed between stage-2-design and stage-3-roadmap, file by file, a
 
 ## Come back to the latest version
 
-Paste this:
+First stop any app that is still running. Then paste this:
 
 ```
 Switch back to the latest version of the project (the main branch).
@@ -133,7 +137,9 @@ Switch back to the latest version of the project (the main branch).
 
 ## Notes
 
-- Snapshot names available today: `stage-1-spec`, `stage-2-design`, `stage-3-roadmap`, `stage-5-build-next`. If your instructor gives you different names, use those.
+- Snapshot names currently available: `stage-1-spec`, `stage-2-design`, `stage-3-roadmap`, `stage-5-build-next`. If your instructor gives you different names, use those.
+- These steps work the same on Windows and Mac.
+- If you see an "address already in use" message, an earlier app is still running. Press Ctrl+C in its terminal, or paste: "Stop the app that is running."
 - Stop an app before you switch to another stage: press Ctrl+C in the terminal where it is running.
 - Your `.streamlit/secrets.toml` stays in place when you switch stages. It is not part of any snapshot, so you only create it once.
 - If Streamlit asks for your email the first time it starts, just press Enter to skip it.

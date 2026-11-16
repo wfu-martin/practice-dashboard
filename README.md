@@ -13,8 +13,10 @@ test suite with a worked reconciliation test.
 This project was built in stages. Each published stage is a release you can check out and, where something runs, run on your own computer at localhost. Paste this into Claude Code in a new, empty folder to get the project:
 
 ```
-Clone https://github.com/wfu-martin/practice-dashboard.git into the current folder, then open the project folder it creates. List the files and folders and tell me in plain language what each one is for.
+Clone https://github.com/wfu-martin/practice-dashboard.git into the current folder, then open the project folder it creates. List the files and folders and tell me in plain language what each one is for. Tell me the full path of the project folder.
 ```
+
+The clone creates a subfolder named `practice-dashboard`; reopen Claude Code inside it before the next prompt.
 
 | Snapshot | What you can do |
 |---|---|
@@ -22,6 +24,8 @@ Clone https://github.com/wfu-martin/practice-dashboard.git into the current fold
 | `stage-2-design` | Run the clickable mockup (no database login) |
 | `stage-3-roadmap` | Run the mockup again; nothing new |
 | `stage-5-build-next` | Run the real dashboard (needs the course database login) |
+
+There is no stage 4 snapshot.
 
 The full prompts for every stage are in [STUDENT-GUIDE.md](STUDENT-GUIDE.md).
 
