@@ -50,3 +50,21 @@ def revenue_by_genre(engine: sqlalchemy.Engine) -> pd.DataFrame:
         ORDER BY revenue DESC
         """,
     )
+
+
+def grand_total(engine: sqlalchemy.Engine) -> pd.DataFrame:
+    """Total revenue across all years, the one number that ties to Finance.
+
+    Revenue = unit price x quantity, added up over every invoice line.
+    Granularity: one row, column `revenue`.
+    """
+    raise NotImplementedError("Issue #6")
+
+
+def finance_gap(engine: sqlalchemy.Engine) -> pd.DataFrame:
+    """How far line-item revenue is from Finance's sum of invoice totals.
+
+    gap = revenue (invoice lines) - finance_total (sum of invoice totals).
+    Granularity: one row, columns `revenue`, `finance_total`, `gap`.
+    """
+    raise NotImplementedError("Issue #6")
