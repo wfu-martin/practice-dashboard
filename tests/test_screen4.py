@@ -90,7 +90,7 @@ def test_ac10_screen4_rep_table(engine):
     assert not app.exception
     table = _rep_table(app)
     assert list(table.columns) == ["Rep", "Customers", "Revenue per customer"]
-    rows = {r.Rep: (int(r.Customers), r._3) for r in table.itertuples(index=False)}
+    rows = {r.Rep: (int(r.Customers), r._2) for r in table.itertuples(index=False)}
     assert rows == {"Jane": (21, "$39.67"), "Margaret": (20, "$38.77"), "Steve": (18, "$40.01")}
     assert any(h.value == r"Revenue per customer is within \$1.24 across reps" for h in app.subheader)
     assert any("Customers and revenue per customer" in c.value and "full period" in c.value for c in app.caption)
@@ -109,5 +109,5 @@ def test_ac10_rep_table_reconciles_to_customer_invoices(engine):
     )
     want = {r.rep: (int(r.customers), f"${float(r.per_customer):,.2f}") for r in expected.itertuples()}
     table = _rep_table(_open_sales_reps())
-    got = {r.Rep: (int(r.Customers), r._3) for r in table.itertuples(index=False)}
+    got = {r.Rep: (int(r.Customers), r._2) for r in table.itertuples(index=False)}
     assert got == want
