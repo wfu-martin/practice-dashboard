@@ -77,6 +77,13 @@ def finance_section():
     charts.finance_check(load_finance_check())
 
 
+def share_bars(takeaway: str, note: str, data, label: str, label_name: str):
+    """A headline and horizontal bars of each item's share of revenue, top 5."""
+    shares = data.assign(share=data["share_pct"] / 100).rename(columns={label: label_name})
+    charts.headline(takeaway, note)
+    charts.show(charts.ranked_bar(shares, label_name, "share", kind="percent", top=5))
+
+
 def where_the_money_comes_from():
     # The sidebar area where the year picker will go (Screen 1 only).
     st.sidebar.subheader("Year")
@@ -98,6 +105,16 @@ def where_the_money_comes_from():
         {"label": f"Top country: {top_country['country']}", "value": top_country["share_pct"] / 100, "kind": "percent"},
         gap_tile(),
     ])
+    share_bars(
+        f"{top_genre['genre']} earns {charts.fmt(top_genre['share_pct'] / 100, 'percent')} of revenue",
+        "Revenue by genre, all years, top 5, as a share of all revenue.",
+        genres, "genre", "Genre",
+    )
+    share_bars(
+        f"{top_country['country']} earns {charts.fmt(top_country['share_pct'] / 100, 'percent')} of revenue",
+        "Revenue by billing country, all years, top 5, as a share of all revenue.",
+        countries, "country", "Country",
+    )
     finance_section()
 
 

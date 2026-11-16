@@ -1,7 +1,9 @@
 """Issue #19: Screen 1 share bars, top 5 genres and top 5 countries (AC-1, AC-3)."""
 
+import base64
 import json
 
+import numpy as np
 from streamlit.testing.v1 import AppTest
 
 from conftest import scalar
@@ -34,12 +36,22 @@ def _open_screen_1() -> AppTest:
     return AppTest.from_function(script, default_timeout=60).run()
 
 
+def _values(array) -> list:
+    """A trace's values; plotly may store numbers as base64 bytes plus a dtype."""
+    if isinstance(array, dict):
+        return np.frombuffer(base64.b64decode(array["bdata"]), dtype=array["dtype"]).tolist()
+    return list(array)
+
+
 def _bars(app: AppTest) -> list[dict]:
-    """The bar traces of every chart on the screen: labels, values, order, colors."""
+    """The bar trace of every chart on the screen: labels, values, order, format."""
     out = []
     for chart in app.get("plotly_chart"):
-        trace = json.loads(chart.proto.figure.spec)["data"][0]
-        out.append(trace)
+        trace = json.loads(chart.proto.spec)["data"][0]
+        out.append({
+            "x": _values(trace["x"]), "y": _values(trace["y"]),
+            "orientation": trace["orientation"], "texttemplate": trace["texttemplate"],
+        })
     return out
 
 
