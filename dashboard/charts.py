@@ -77,16 +77,17 @@ def kpi_row(tiles: list[dict]) -> None:
     optional "note" is a short caption under the tile.
     """
     for column, tile in zip(st.columns(len(tiles)), tiles):
-        delta = None
+        delta, delta_color = None, "off"  # gray: only a loss is colored (red)
         if tile.get("delta") is not None:
             sign = "+" if float(tile["delta"]) >= 0 else "-"
+            delta_color = "off" if sign == "+" else "red"
             delta_kind = tile.get("delta_kind", tile["kind"])
             basis = tile["value"] if delta_kind == tile["kind"] else tile["delta"]
             precision = _kind(delta_kind, float(basis))
             delta = sign + _PY[precision].format(abs(float(tile["delta"])))
             if tile.get("versus"):
                 delta += f" {tile['versus']}"
-        column.metric(tile["label"], fmt(tile["value"], tile["kind"]), delta)
+        column.metric(tile["label"], fmt(tile["value"], tile["kind"]), delta, delta_color=delta_color)
         if tile.get("note"):
             column.caption(tile["note"])
 
@@ -153,6 +154,8 @@ def trend_line(
             showarrow=False, xanchor="left", xshift=8, font={"color": ACCENT, "size": 14},
         )
     fig.update_xaxes(title=None, showgrid=False)
+    if data[date].dtype == object:  # years kept as text: one tick per year, never 2021.5
+        fig.update_xaxes(type="category")
     fig.update_yaxes(title=None, tickformat=d3, gridcolor="#ECEEF1", rangemode="tozero")
     return _house(fig, height=320)
 
