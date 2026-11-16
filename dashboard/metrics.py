@@ -317,3 +317,15 @@ def rep_revenue(engine: sqlalchemy.Engine) -> pd.DataFrame:
         ORDER BY revenue DESC, rep
         """,
     )
+
+
+def rep_customers(engine: sqlalchemy.Engine) -> pd.DataFrame:
+    """Customers and revenue per customer for each sales support rep, full period.
+
+    Rep customers = count of customers whose support_rep_id is the rep.
+    Revenue per customer = Rep revenue / Rep customers, for employees titled
+    Sales Support Agent.
+    Granularity: one row per rep, most customers first, columns `employee_id`,
+    `rep` (first name), `customers`, `revenue_per_customer`.
+    """
+    raise NotImplementedError("Issue #15")
