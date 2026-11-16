@@ -61,3 +61,7 @@ You do this once, during the roadmap's hello-world deploy task; `/dashkit:build-
 | `ROADMAP.md` | Phases and critical path (written with `/dashkit:roadmap`) |
 | `ROLES.md` | Who owns what |
 | `CLAUDE.md` | What Claude Code reads at the start of every session |
+
+## Upgrading Streamlit
+
+After upgrading Streamlit (it is pinned in `requirements.txt`), click Back to top in a browser. The button finds Streamlit's main scroll area by its test id (`stMain`), and the tests only check that the button is present.

@@ -222,9 +222,6 @@ a.back-to-top:focus-visible {{ outline: 3px solid {TEXT}; outline-offset: 2px; }
 
 # Streamlit scrolls inside its own main container, not the browser window, and a
 # plain link to "#" would not move it. This listener scrolls that container.
-# After upgrading Streamlit, click Back to top in a browser: the script finds the
-# scroll area by its test id (stMain), and if Streamlit renames it the click
-# silently does nothing (the tests only check the button is present).
 _BACK_TO_TOP_JS = """
 <script>
 if (!window.__backToTopReady) {
