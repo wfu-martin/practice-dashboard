@@ -4,7 +4,7 @@ A template for a Streamlit dashboard on the course PostgreSQL server: the
 connection already set up for Streamlit Community Cloud, a data layer, and a
 test suite with a worked reconciliation test.
 
-**Live app:** <paste your Community Cloud link here>
+**Live app:** https://practice-dashboard-nkxuwkc32apvd2rxpah8dq.streamlit.app/
 
 ---
 
