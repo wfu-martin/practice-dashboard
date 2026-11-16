@@ -35,6 +35,11 @@ Numbers in the drawings come from the acceptance criteria in `spec.md`; the
 real headlines are computed from the data. Every screen's caption names the
 metric, the period and the filters.
 
+Screens 2, 3 and 4 also show, under their headline, a caption of the grand
+total and the date range the data covers (for example "Total revenue $2,329,
+2021-01-01 to 2025-12-22", computed from the data), so every screen shows the
+number that ties to Finance.
+
 **Screen 1. Where the money comes from** (questions 1, 2, 3, 10)
 
 ```
