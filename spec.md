@@ -77,6 +77,8 @@ Every screen shows the grand total revenue and the date range it covers, so Morg
 | 3. Customers | Questions 6, 7 | None. Always the full period. |
 | 4. Sales reps | Questions 8, 9 | None. Always the full period. |
 
+Every screen has a floating back-to-top button in the bottom-right corner. It is not a filter: it changes no numbers.
+
 ## Acceptance criteria
 
 - **AC-1** (question 1): Given all years are selected, when Screen 1 loads, then the top five genres by revenue are Rock 826.65 (35.5%), Latin 382.14 (16.4%), Metal 261.36 (11.2%), Alternative & Punk 241.56 (10.4%), and TV Shows 93.53 (4.0%).
@@ -92,6 +94,7 @@ Every screen shows the grand total revenue and the date range it covers, so Morg
 - **AC-11** (question 10): Given any screen with all years in view, when it loads, then the grand total shown is 2,328.60, equal to the sum of invoice totals, and the reconciliation gap is 0.00.
 - **AC-12** (question 10): Given all years are selected, when revenue is broken out by genre, by country, by year, and by rep, then each breakdown adds up to 2,328.60.
 - **AC-13** (question 1): Given the year 2023 is selected on Screen 1, when the user opens Screens 2, 3, or 4, then they still show the full period (for example the Growth screen still shows all five years).
+- **AC-14**: Given any of the four screens, when the page is longer than the window and the viewer has scrolled down, then a floating 'Back to top' button is visible in the bottom-right corner, and when it is clicked the page returns to the top.
 
 ## Out of scope
 
