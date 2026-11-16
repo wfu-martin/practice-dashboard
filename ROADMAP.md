@@ -9,12 +9,12 @@ acceptance criteria and the tests that prove it.
 | 1. Data connection | The app reads the team's database, locally and on Community Cloud | #4, #5 |
 | 2. Data layer | Every metric in the spec has a tested function in `dashboard/metrics.py` | #6, #7, #8, #9, #10, #11, #12, #13, #14, #15, #16 |
 | 3. Views | Each stakeholder question has a screen section that answers it, built as `design.md` draws it | #17, #18, #19, #20, #21, #22, #23 |
-| 4. Filters | The interactions the spec lists work, and the numbers still reconcile | #24, #25 |
+| 4. Filters | The interactions the spec lists work, and the numbers still reconcile | #24, #25, #48 |
 | 5. Polish and deploy | The app follows every rule in `design.md`; `mockup.py` is gone; the live app link is in the README | #26, #27 |
 
 ## Critical path
 
-Longest chain, which sets the pace: #4 → #6 → #7 → #16 → #18 → #19 → #20 → #24 → #25 → #26 → #27.
+Longest chain, which sets the pace: #4 → #6 → #7 → #16 → #18 → #19 → #20 → #24 → #25 → #48 → #26 → #27.
 
 Which Issues block which:
 
@@ -24,7 +24,7 @@ Which Issues block which:
 - #5 and #6 block #17 (app shell). #16 and #17 block #18 (Finance section).
 - #18 blocks every screen: #19, #20, #21, #22, #23. Each screen also needs its own data Issues: #19 needs #7, #8; #20 needs #9, #19; #21 needs #10, #11; #22 needs #12, #13; #23 needs #14, #15.
 - #19 and #20 block #24 (year picker); #21, #22, #23, and #24 block #25 (screens 2-4 ignore the picker).
-- #25 blocks #26 (style audit); #26 blocks #27 (final deploy).
+- #25 blocks #48 (back-to-top button); #48 blocks #26 (style audit); #26 blocks #27 (final deploy).
 
 ---
 
