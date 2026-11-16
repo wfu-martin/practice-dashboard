@@ -54,6 +54,24 @@ def grand_total(engine: sqlalchemy.Engine) -> pd.DataFrame:
     return read_sql(engine, _LINE_REVENUE_SQL)
 
 
+def available_years(engine: sqlalchemy.Engine) -> pd.DataFrame:
+    """The calendar years that have at least one invoice, oldest first.
+
+    These are the choices in Screen 1's year picker.
+    Granularity: one row per year, column `year`.
+    """
+    raise NotImplementedError("Issue #24")
+
+
+def year_total(engine: sqlalchemy.Engine, year: int | None = None) -> pd.DataFrame:
+    """Total revenue for one calendar year, or for all years when `year` is None.
+
+    Revenue = unit price x quantity over every invoice line dated in that year.
+    Granularity: one row, column `revenue` (empty total when the year has no invoices).
+    """
+    raise NotImplementedError("Issue #24")
+
+
 def finance_gap(engine: sqlalchemy.Engine) -> pd.DataFrame:
     """How far Finance's sum of invoice totals is from line-item revenue.
 
