@@ -102,7 +102,7 @@ def test_ac6_screen2_monthly_line(engine):
     assert str(line["x"][-1])[:10] == "2025-12-01"
     assert round(line["y"][0], 2) == 35.64
     assert [str(x) for x in line["x"]] == sorted(str(x) for x in line["x"])
-    assert any(h.value.startswith("Monthly revenue is usually about $38") for h in app.subheader)
+    assert any(h.value.startswith(r"Monthly revenue is usually about \$38") for h in app.subheader)
     assert any("calendar month" in c.value for c in app.caption)
 
 
