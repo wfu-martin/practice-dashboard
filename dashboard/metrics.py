@@ -58,7 +58,10 @@ def grand_total(engine: sqlalchemy.Engine) -> pd.DataFrame:
     Revenue = unit price x quantity, added up over every invoice line.
     Granularity: one row, column `revenue`.
     """
-    raise NotImplementedError("Issue #6")
+    return read_sql(
+        engine,
+        "SELECT SUM(unit_price * quantity) AS revenue FROM invoice_line",
+    )
 
 
 def finance_gap(engine: sqlalchemy.Engine) -> pd.DataFrame:
@@ -67,4 +70,13 @@ def finance_gap(engine: sqlalchemy.Engine) -> pd.DataFrame:
     gap = revenue (invoice lines) - finance_total (sum of invoice totals).
     Granularity: one row, columns `revenue`, `finance_total`, `gap`.
     """
-    raise NotImplementedError("Issue #6")
+    return read_sql(
+        engine,
+        """
+        SELECT lines.revenue,
+               invoices.finance_total,
+               ROUND(lines.revenue - invoices.finance_total, 2) AS gap
+        FROM (SELECT SUM(unit_price * quantity) AS revenue FROM invoice_line) AS lines,
+             (SELECT SUM(total) AS finance_total FROM invoice) AS invoices
+        """,
+    )
