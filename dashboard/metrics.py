@@ -81,3 +81,15 @@ def finance_gap(engine: sqlalchemy.Engine) -> pd.DataFrame:
              (SELECT SUM(total) AS finance_total FROM invoice) AS invoices
         """,
     )
+
+
+def genre_revenue_share(engine: sqlalchemy.Engine, year: int | None = None) -> pd.DataFrame:
+    """Revenue and share of total for each music genre, largest first.
+
+    Revenue = unit price x quantity over every invoice line. Share is the
+    genre's revenue as a percentage of all genre revenue in view (0 to 100).
+    `year` limits the figures to invoices dated in that calendar year; None
+    means all years.
+    Granularity: one row per genre, columns `genre`, `revenue`, `share_pct`.
+    """
+    raise NotImplementedError("Issue #7")
