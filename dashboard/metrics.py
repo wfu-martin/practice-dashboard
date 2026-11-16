@@ -158,3 +158,16 @@ def genre_country_revenue(
         """,
         {"year": year, "limit": limit},
     )
+
+
+def yearly_revenue(engine: sqlalchemy.Engine) -> pd.DataFrame:
+    """Revenue for each calendar year with its change from the prior year.
+
+    Revenue = unit price x quantity over every invoice line, grouped by the
+    invoice's calendar year. change_pct = (this year - prior year) / prior
+    year, as a percentage; the first year has no prior year, so its change is
+    empty (null). 2025 ends 22 Dec, so it is a nearly full year.
+    Granularity: one row per year, oldest first, columns `year`, `revenue`,
+    `change_pct`.
+    """
+    raise NotImplementedError("Issue #10")
