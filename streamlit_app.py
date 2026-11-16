@@ -43,6 +43,11 @@ def load_countries():
 
 
 @st.cache_data(ttl=600)
+def load_combinations():
+    return metrics.genre_country_revenue(db.get_engine(), limit=10)
+
+
+@st.cache_data(ttl=600)
 def load_yearly():
     return metrics.yearly_revenue(db.get_engine())
 
@@ -115,6 +120,14 @@ def where_the_money_comes_from():
         "Revenue by billing country, all years, top 5, as a share of all revenue.",
         countries, "country", "Country",
     )
+    combinations = load_combinations().assign(Combination=lambda d: d["country"] + " - " + d["genre"])
+    top_combo = combinations.iloc[0]
+    charts.headline(
+        f"{top_combo['country']} {top_combo['genre']} is the biggest single combination: "
+        f"{charts.fmt(top_combo['revenue'], 'money')}",
+        "Revenue (unit price × quantity) by billing country and genre, all years, top 10.",
+    )
+    charts.show(charts.ranked_bar(combinations.astype({"revenue": float}), "Combination", "revenue"))
     finance_section()
 
 
