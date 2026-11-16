@@ -97,7 +97,7 @@ metric, the period and the filters.
  (no filters)       ----------------------------------------------------
                     [Top-10 share    ] [Top-10 revenue] [Bought all 5 years] [Gap vs Finance]
                     [19.4%           ] [$451          ] [2 of 10           ] [$0.00         ]
-                    [vs 10.0% if even]
+                    [vs 16.9% if even]
 
                     Top 10 customers bring in $451, 19.4% of total  <- Q6, ranked bars
                     Revenue by customer, full period, top 10 (ties included)
@@ -111,6 +111,8 @@ metric, the period and the filters.
 
                     > Check against Finance (collapsed)              <- Q10
 ```
+
+The even-split figure is 10 divided by the customer count (10 of 59 = 16.9%).
 
 **Screen 4. Sales reps** (questions 8, 9, 10)
 
