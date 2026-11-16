@@ -292,3 +292,14 @@ def top10_years_active(engine: sqlalchemy.Engine) -> pd.DataFrame:
         ORDER BY t.revenue DESC, customer
         """,
     )
+
+
+def rep_revenue(engine: sqlalchemy.Engine) -> pd.DataFrame:
+    """Revenue from each sales support rep's customers, full period.
+
+    Rep revenue = revenue (unit_price x quantity, summed) from customers whose
+    support_rep_id is the rep, for employees titled Sales Support Agent.
+    Granularity: one row per rep, largest revenue first, columns `employee_id`,
+    `rep` (first name), `revenue`.
+    """
+    raise NotImplementedError("Issue #14")
