@@ -256,6 +256,32 @@ def sales_reps():
         {"label": "Avg customers per rep", "value": reps["customers"].mean(), "kind": "count"},
         gap_tile(),
     ])
+
+    # Ranked bars of revenue by rep (question 8).
+    bars = revenue.astype({"revenue": float}).rename(columns={"rep": "Rep"})
+    lowest = bars.iloc[-1]
+    charts.headline(
+        f"{top_rep['rep']}'s customers bring in {charts.fmt(top_rep['revenue'], 'money')}, "
+        f"{lowest['Rep']}'s {charts.fmt(lowest['revenue'], 'money')}",
+        "Revenue from each rep's customers, full period.",
+    )
+    charts.show(charts.ranked_bar(bars, "Rep", "revenue", top=len(bars)))
+
+    # Customers and revenue per customer, one row per rep (question 9).
+    spread = reps["revenue_per_customer"].max() - reps["revenue_per_customer"].min()
+    charts.headline(
+        f"Revenue per customer is within {charts.fmt(spread, 'cents')} across reps",
+        "Customers and revenue per customer, full period.",
+    )
+    st.dataframe(
+        pd.DataFrame({
+            "Rep": reps["rep"],
+            "Customers": reps["customers"].astype(int),
+            "Revenue per customer": [charts.fmt(v, "cents") for v in reps["revenue_per_customer"]],
+        }),
+        hide_index=True,
+        width="stretch",
+    )
     finance_section()
 
 
