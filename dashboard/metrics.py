@@ -452,4 +452,7 @@ def invoice_date_range(engine: sqlalchemy.Engine) -> pd.DataFrame:
 
     Granularity: one row, columns `first_date` and `last_date`.
     """
-    raise NotImplementedError("Issue #26")
+    return read_sql(
+        engine,
+        "SELECT MIN(invoice_date) AS first_date, MAX(invoice_date) AS last_date FROM invoice",
+    )
