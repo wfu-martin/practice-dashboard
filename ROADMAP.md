@@ -10,7 +10,7 @@ acceptance criteria and the tests that prove it.
 | 2. Data layer | Every metric in the spec has a tested function in `dashboard/metrics.py` | #6, #7, #8, #9, #10, #11, #12, #13, #14, #15, #16 |
 | 3. Views | Each stakeholder question has a screen section that answers it, built as `design.md` draws it | #17, #18, #19, #20, #21, #22, #23 |
 | 4. Filters | The interactions the spec lists work, and the numbers still reconcile | #24, #25, #48 |
-| 5. Polish and deploy | The app follows every rule in `design.md`; `mockup.py` is gone; the live app link is in the README | #26, #27 |
+| 5. Polish and deploy | The app follows every rule in `design.md`; `mockup.py` is gone; the live app link is in the README | #26, #27, #54 |
 
 ## Critical path
 

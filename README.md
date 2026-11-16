@@ -8,6 +8,25 @@ test suite with a worked reconciliation test.
 
 ---
 
+## Follow along, stage by stage
+
+This project was built in stages. Each published stage is a release you can check out and, where something runs, run on your own computer at localhost. Paste this into Claude Code in a new, empty folder to get the project:
+
+```
+Clone https://github.com/wfu-martin/practice-dashboard.git into the current folder, then open the project folder it creates. List the files and folders and tell me in plain language what each one is for.
+```
+
+| Snapshot | What you can do |
+|---|---|
+| `stage-1-spec` | Read the plan; nothing runs |
+| `stage-2-design` | Run the clickable mockup (no database login) |
+| `stage-3-roadmap` | Run the mockup again; nothing new |
+| `stage-5-build-next` | Run the real dashboard (needs the course database login) |
+
+The full prompts for every stage are in [STUDENT-GUIDE.md](STUDENT-GUIDE.md).
+
+---
+
 ## Start a project from it
 
 On GitHub, **Use this template → Create a new repository**, or ask Claude Code:
@@ -58,6 +77,7 @@ You do this once, during the roadmap's hello-world deploy task; `/dashkit:build-
 | `spec.md` | What to build (written with `/dashkit:spec`) |
 | `design.md` | Each screen as drawn, and the style rules (screens drawn with `/dashkit:design`) |
 | `ROADMAP.md` | Phases and critical path (written with `/dashkit:roadmap`) |
+| `STUDENT-GUIDE.md` | Prompts to clone and run each published stage |
 | `ROLES.md` | Who owns what |
 | `CLAUDE.md` | What Claude Code reads at the start of every session |
 
