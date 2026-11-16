@@ -66,9 +66,9 @@ def grand_total(engine: sqlalchemy.Engine) -> pd.DataFrame:
 
 
 def finance_gap(engine: sqlalchemy.Engine) -> pd.DataFrame:
-    """How far line-item revenue is from Finance's sum of invoice totals.
+    """How far Finance's sum of invoice totals is from line-item revenue.
 
-    gap = revenue (invoice lines) - finance_total (sum of invoice totals).
+    gap = finance_total (sum of invoice totals) - revenue (invoice lines).
     Granularity: one row, columns `revenue`, `finance_total`, `gap`.
     """
     return read_sql(
@@ -76,7 +76,7 @@ def finance_gap(engine: sqlalchemy.Engine) -> pd.DataFrame:
         f"""
         SELECT lines.revenue,
                invoices.finance_total,
-               ROUND(lines.revenue - invoices.finance_total, 2) AS gap
+               ROUND(invoices.finance_total - lines.revenue, 2) AS gap
         FROM ({_LINE_REVENUE_SQL}) AS lines,
              (SELECT SUM(total) AS finance_total FROM invoice) AS invoices
         """,
