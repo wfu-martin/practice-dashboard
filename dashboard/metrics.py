@@ -170,4 +170,21 @@ def yearly_revenue(engine: sqlalchemy.Engine) -> pd.DataFrame:
     Granularity: one row per year, oldest first, columns `year`, `revenue`,
     `change_pct`.
     """
-    raise NotImplementedError("Issue #10")
+    return read_sql(
+        engine,
+        """
+        WITH yearly AS (
+            SELECT CAST(EXTRACT(YEAR FROM i.invoice_date) AS integer) AS year,
+                   SUM(il.unit_price * il.quantity) AS revenue
+            FROM invoice_line AS il
+            JOIN invoice AS i ON i.invoice_id = il.invoice_id
+            GROUP BY 1
+        )
+        SELECT year,
+               revenue,
+               100 * (revenue - LAG(revenue) OVER (ORDER BY year))
+                   / LAG(revenue) OVER (ORDER BY year) AS change_pct
+        FROM yearly
+        ORDER BY year
+        """,
+    )
