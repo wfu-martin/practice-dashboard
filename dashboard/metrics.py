@@ -363,4 +363,16 @@ def breakdown_totals(engine: sqlalchemy.Engine) -> pd.DataFrame:
     rep, columns `breakdown`, `groups` (rows in that breakdown), `revenue`
     (their sum).
     """
-    raise NotImplementedError("Issue #16")
+    breakdowns = {
+        "genre": genre_revenue_share(engine),
+        "country": country_revenue_share(engine),
+        "year": yearly_revenue(engine),
+        "rep": rep_revenue(engine),
+    }
+    return pd.DataFrame(
+        {
+            "breakdown": list(breakdowns),
+            "groups": [len(rows) for rows in breakdowns.values()],
+            "revenue": [rows["revenue"].sum() for rows in breakdowns.values()],
+        }
+    )
