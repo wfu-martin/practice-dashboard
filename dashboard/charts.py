@@ -154,7 +154,7 @@ def trend_line(
             showarrow=False, xanchor="left", xshift=8, font={"color": ACCENT, "size": 14},
         )
     fig.update_xaxes(title=None, showgrid=False)
-    if data[date].dtype == object:  # years kept as text: one tick per year, never 2021.5
+    if not pd.api.types.is_datetime64_any_dtype(data[date]):  # years kept as text: one tick per year, never 2021.5
         fig.update_xaxes(type="category")
     fig.update_yaxes(title=None, tickformat=d3, gridcolor="#ECEEF1", rangemode="tozero")
     return _house(fig, height=320)
